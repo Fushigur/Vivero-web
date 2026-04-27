@@ -12,6 +12,7 @@ import {
   query,
   orderBy,
   deleteDoc,
+  updateDoc,
   doc
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 import { 
@@ -47,6 +48,17 @@ let plantToDeleteId = null;
 let buttonToDeleteEl = null;
 
 let selectedFile = null;
+
+// Variables Modo Edición
+let editModeId = null;
+let currentImageUrl = null;
+const formTitle = document.getElementById("formTitle");
+const btnCancelEdit = document.getElementById("btnCancelEdit");
+const plantNameInput = document.getElementById("plantName");
+const plantCategoryInput = document.getElementById("plantCategory");
+const plantBadgeInput = document.getElementById("plantBadge");
+const plantPriceInput = document.getElementById("plantPrice");
+const plantDescriptionInput = document.getElementById("plantDescription");
 
 // Control de Sesión Acual
 onAuthStateChanged(auth, (user) => {
@@ -116,54 +128,70 @@ plantImageInput.addEventListener("change", (e) => {
 addPlantForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   
-  if (!selectedFile) {
+  if (!editModeId && !selectedFile) {
     showMsg("Por favor, selecciona una imagen.", false);
     return;
   }
 
   try {
     btnSubmitPlant.disabled = true;
-    btnSubmitPlant.textContent = "Subiendo imagen resolviendo base de datos...";
+    btnSubmitPlant.textContent = "Guardando resolviendo base de datos...";
     showMsg("", true);
 
-    // 1. Subir imagen a ImgBB (Gratis Total)
-    const formData = new FormData();
-    formData.append("image", selectedFile);
-    
-    const imbbResponse = await fetch("https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff", {
-      method: "POST",
-      body: formData
-    });
-    
-    const imgbbData = await imbbResponse.json();
-    if (!imgbbData.success) {
-      throw new Error("ImgBB falló: " + (imgbbData.error ? imgbbData.error.message : "Desconocido"));
+    let finalImageUrl = currentImageUrl; // Si no cambia la foto, mantendremos la actual
+
+    // 1. Subir imagen a ImgBB si hubo una NUEVA imagen
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      
+      const imbbResponse = await fetch("https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff", {
+        method: "POST",
+        body: formData
+      });
+      
+      const imgbbData = await imbbResponse.json();
+      if (!imgbbData.success) {
+        throw new Error("ImgBB falló: " + (imgbbData.error ? imgbbData.error.message : "Desconocido"));
+      }
+      finalImageUrl = imgbbData.data.url;
     }
     
-    // 2. Obtener la URL pública de la imagen desde ImgBB
-    const imageUrl = imgbbData.data.url;
-    // 3. Obtener los valores del form
-    const plantName = document.getElementById("plantName").value;
-    const plantCategory = document.getElementById("plantCategory").value;
-    const plantBadge = document.getElementById("plantBadge").value;
-    const plantPrice = document.getElementById("plantPrice").value;
-    const plantDescription = document.getElementById("plantDescription").value;
+    // Obtener los valores del form
+    const plantName = plantNameInput.value;
+    const plantCategory = plantCategoryInput.value;
+    const plantBadge = plantBadgeInput.value;
+    const plantPrice = plantPriceInput.value;
+    const plantDescription = plantDescriptionInput.value;
 
-    // 4. Guardar en Firestore
-    await addDoc(collection(db, "products"), {
-      name: plantName,
-      category: plantCategory,
-      badge: plantBadge,
-      priceLabel: plantPrice,
-      description: plantDescription,
-      imageUrl: imageUrl,
-      createdAt: serverTimestamp()
-    });
+    if (editModeId) {
+      // MODO EDICION: Actualizar documento
+      await updateDoc(doc(db, "products", editModeId), {
+        name: plantName,
+        category: plantCategory,
+        badge: plantBadge,
+        priceLabel: plantPrice,
+        description: plantDescription,
+        imageUrl: finalImageUrl
+      });
+      showMsg("¡Planta actualizada exitosamente!", true);
+    } else {
+      // MODO CREACION: Guardar nuevo documento en Firestore
+      await addDoc(collection(db, "products"), {
+        name: plantName,
+        category: plantCategory,
+        badge: plantBadge,
+        priceLabel: plantPrice,
+        description: plantDescription,
+        imageUrl: finalImageUrl,
+        createdAt: serverTimestamp()
+      });
+      showMsg("¡Planta agregada exitosamente al catálogo visual!", true);
+    }
 
-    // Éxito
-    showMsg("¡Planta agregada exitosamente al catálogo visual!", true);
     addPlantForm.reset();
     plantImageInput.dispatchEvent(new Event("change")); // Limpiar preview
+    resetEditMode();
     loadPlants(); // Recargar la lista
 
   } catch (error) {
@@ -171,7 +199,7 @@ addPlantForm.addEventListener("submit", async (e) => {
     showMsg("Hubo un error al subir la planta: " + error.message, false);
   } finally {
     btnSubmitPlant.disabled = false;
-    btnSubmitPlant.textContent = "Subir al Catálogo Público";
+    btnSubmitPlant.textContent = editModeId ? "Guardar Cambios" : "Subir al Catálogo Público";
   }
 });
 
@@ -209,10 +237,39 @@ async function loadPlants() {
             <span>${data.category}</span>
           </div>
         </div>
-        <button class="btn-delete" data-id="${id}">
-          <i class="fas fa-trash-alt"></i> Borrar
-        </button>
+        <div class="admin-actions">
+          <button class="btn-edit" data-id="${id}">
+            <i class="fas fa-edit"></i> Editar
+          </button>
+          <button class="btn-delete" data-id="${id}">
+            <i class="fas fa-trash-alt"></i> Borrar
+          </button>
+        </div>
       `;
+
+      // Evento Editar
+      const btnEdit = row.querySelector(".btn-edit");
+      btnEdit.addEventListener("click", () => {
+        // Llenar datos en el formulario
+        editModeId = id;
+        currentImageUrl = data.imageUrl;
+        plantNameInput.value = data.name;
+        plantCategoryInput.value = data.category;
+        plantBadgeInput.value = data.badge;
+        plantPriceInput.value = data.priceLabel;
+        plantDescriptionInput.value = data.description;
+        
+        imagePreview.src = data.imageUrl;
+        imagePreview.classList.remove("hidden");
+        uploadText.textContent = "Haz clic para cambiar imagen (opcional)";
+        
+        formTitle.textContent = "Editando Planta: " + data.name;
+        btnSubmitPlant.textContent = "Guardar Cambios";
+        btnCancelEdit.classList.remove("hidden");
+        
+        // Scroll hacia arriba
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
 
       // Evento de borrado (Abre el modal)
       const btnDelete = row.querySelector(".btn-delete");
@@ -259,4 +316,20 @@ btnConfirmDelete.addEventListener("click", async () => {
       buttonToDeleteEl = null;
     }
   }
+});
+
+function resetEditMode() {
+  editModeId = null;
+  currentImageUrl = null;
+  formTitle.textContent = "Agregar Nueva Planta";
+  btnSubmitPlant.textContent = "Subir al Catálogo Público";
+  btnCancelEdit.classList.add("hidden");
+  uploadText.textContent = "Haz clic para seleccionar la imagen";
+}
+
+btnCancelEdit.addEventListener("click", () => {
+  addPlantForm.reset();
+  plantImageInput.dispatchEvent(new Event("change"));
+  resetEditMode();
+  showMsg("", true);
 });

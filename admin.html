@@ -58,7 +58,7 @@
 
       <!-- Pantalla Principal (Catálogo Mánager) -->
       <section id="dashboardSection" class="panel hidden">
-        <h2>Agregar Nueva Planta</h2>
+        <h2 id="formTitle">Agregar Nueva Planta</h2>
         <form id="addPlantForm">
           <div class="form-grid">
             <div class="form-group">
@@ -131,6 +131,9 @@
             id="btnSubmitPlant"
           >
             Subir al Catálogo Público
+          </button>
+          <button type="button" id="btnCancelEdit" class="btn-secondary hidden" style="margin-top: 10px; width: 100%;">
+            Cancelar Edición
           </button>
           <div id="uploadMessage" class="status-msg"></div>
         </form>
