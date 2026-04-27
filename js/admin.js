@@ -7,7 +7,12 @@ import {
 import { 
   collection, 
   addDoc,
-  serverTimestamp 
+  serverTimestamp,
+  getDocs,
+  query,
+  orderBy,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 import { 
   ref, 
@@ -34,6 +39,13 @@ const plantImageInput = document.getElementById("plantImage");
 const imagePreview = document.getElementById("imagePreview");
 const uploadText = document.getElementById("uploadText");
 
+// Elementos del Modal
+const deleteModal = document.getElementById("deleteModal");
+const btnCancelDelete = document.getElementById("btnCancelDelete");
+const btnConfirmDelete = document.getElementById("btnConfirmDelete");
+let plantToDeleteId = null;
+let buttonToDeleteEl = null;
+
 let selectedFile = null;
 
 // Control de Sesión Acual
@@ -45,6 +57,7 @@ onAuthStateChanged(auth, (user) => {
     dashboardSection.classList.remove("hidden");
     dashboardSection.classList.add("show");
     btnLogout.classList.remove("hidden");
+    loadPlants();
   } else {
     // No está logueado
     loginSection.classList.remove("hidden");
@@ -113,14 +126,22 @@ addPlantForm.addEventListener("submit", async (e) => {
     btnSubmitPlant.textContent = "Subiendo imagen resolviendo base de datos...";
     showMsg("", true);
 
-    // 1. Subir imagen al Storage
-    const timestamp = Date.now();
-    const imageRef = ref(storage, `catalog/${timestamp}_${selectedFile.name}`);
-    await uploadBytes(imageRef, selectedFile);
+    // 1. Subir imagen a ImgBB (Gratis Total)
+    const formData = new FormData();
+    formData.append("image", selectedFile);
     
-    // 2. Obtener la URL pública de la imagen
-    const imageUrl = await getDownloadURL(imageRef);
-
+    const imbbResponse = await fetch("https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff", {
+      method: "POST",
+      body: formData
+    });
+    
+    const imgbbData = await imbbResponse.json();
+    if (!imgbbData.success) {
+      throw new Error("ImgBB falló: " + (imgbbData.error ? imgbbData.error.message : "Desconocido"));
+    }
+    
+    // 2. Obtener la URL pública de la imagen desde ImgBB
+    const imageUrl = imgbbData.data.url;
     // 3. Obtener los valores del form
     const plantName = document.getElementById("plantName").value;
     const plantCategory = document.getElementById("plantCategory").value;
@@ -143,6 +164,7 @@ addPlantForm.addEventListener("submit", async (e) => {
     showMsg("¡Planta agregada exitosamente al catálogo visual!", true);
     addPlantForm.reset();
     plantImageInput.dispatchEvent(new Event("change")); // Limpiar preview
+    loadPlants(); // Recargar la lista
 
   } catch (error) {
     console.error("Error al publicar:", error);
@@ -157,3 +179,84 @@ function showMsg(text, isSuccess) {
   uploadMessage.textContent = text;
   uploadMessage.className = "status-msg " + (isSuccess ? "success" : "error-msg");
 }
+
+async function loadPlants() {
+  const container = document.getElementById("plantsListContainer");
+  if(!container) return;
+  container.innerHTML = '<p id="loadingPlants" style="text-align: center; color: var(--primary);">Cargando tus plantas...</p>';
+  
+  try {
+    const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    container.innerHTML = ""; // Limpiar antes de pintar
+
+    if(snapshot.empty) {
+      container.innerHTML = '<p style="text-align:center; color:var(--gray);">Aún no tienes plantas subidas.</p>';
+      return;
+    }
+
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      const id = docSnap.id;
+      
+      const row = document.createElement("div");
+      row.className = "admin-plant-row";
+      row.innerHTML = `
+        <div class="admin-plant-info">
+          <img src="${data.imageUrl}" alt="${data.name}">
+          <div>
+            <h4>${data.name}</h4>
+            <span>${data.category}</span>
+          </div>
+        </div>
+        <button class="btn-delete" data-id="${id}">
+          <i class="fas fa-trash-alt"></i> Borrar
+        </button>
+      `;
+
+      // Evento de borrado (Abre el modal)
+      const btnDelete = row.querySelector(".btn-delete");
+      btnDelete.addEventListener("click", () => {
+        plantToDeleteId = id;
+        buttonToDeleteEl = btnDelete;
+        deleteModal.classList.remove("hidden");
+        deleteModal.classList.add("show");
+      });
+
+      container.appendChild(row);
+    });
+  } catch (error) {
+    console.error("Error al cargar lista:", error);
+    container.innerHTML = '<p style="color:red; text-align:center;">Hubo un error de conexión.</p>';
+  }
+}
+
+// Lógica de los botones del Modal
+btnCancelDelete.addEventListener("click", () => {
+  deleteModal.classList.remove("show");
+  deleteModal.classList.add("hidden");
+  plantToDeleteId = null;
+  buttonToDeleteEl = null;
+});
+
+btnConfirmDelete.addEventListener("click", async () => {
+  if (plantToDeleteId) {
+    btnConfirmDelete.disabled = true;
+    btnConfirmDelete.textContent = "Borrando...";
+    buttonToDeleteEl.innerHTML = "Borrando...";
+    
+    try {
+      await deleteDoc(doc(db, "products", plantToDeleteId));
+      loadPlants(); // Refrescar lista visual
+    } catch(err) {
+      alert("Error al borrar: " + err.message);
+    } finally {
+      deleteModal.classList.remove("show");
+      deleteModal.classList.add("hidden");
+      btnConfirmDelete.disabled = false;
+      btnConfirmDelete.textContent = "Sí, eliminar";
+      plantToDeleteId = null;
+      buttonToDeleteEl = null;
+    }
+  }
+});

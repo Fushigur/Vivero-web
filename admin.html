@@ -92,7 +92,29 @@
           <button type="submit" class="btn-primary btn-large" id="btnSubmitPlant">Subir al Catálogo Público</button>
           <div id="uploadMessage" class="status-msg"></div>
         </form>
+
+        <hr class="separator" />
+
+        <h2 class="section-title">Plantas Existentes</h2>
+        <p style="color: var(--gray); margin-bottom: 1.5rem;">Carga tu listado desde la nube para eliminar ejemplares.</p>
+        
+        <div id="plantsListContainer" class="plants-list">
+          <p id="loadingPlants" style="text-align: center; color: var(--primary);">Cargando tus plantas...</p>
+        </div>
       </section>
+    </div>
+
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <div class="modal-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+        <h3>¿Eliminar Planta?</h3>
+        <p>Estás a punto de eliminar esta planta de forma permanente de tu catálogo público.</p>
+        <div class="modal-actions">
+          <button id="btnCancelDelete" class="btn-secondary">Cancelar</button>
+          <button id="btnConfirmDelete" class="btn-danger">Sí, eliminar</button>
+        </div>
+      </div>
     </div>
 
     <!-- El script como módulo para usar imports de firebase -->
