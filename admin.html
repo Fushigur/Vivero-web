@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel de Administrador | Vivero</title>
+    <!-- Mismos estilos básicos de tipografía -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/admin.css" />
+  </head>
+  <body>
+    <div class="admin-container">
+      <header class="admin-header">
+        <h1>🌱 Vivero Admin</h1>
+        <button id="btnLogout" class="hidden"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+      </header>
+
+      <!-- Pantalla de Login -->
+      <section id="loginSection" class="panel show">
+        <h2>Iniciar Sesión</h2>
+        <p>Ingresa tus credenciales de Firebase para administrar el catálogo.</p>
+        <form id="loginForm">
+          <div class="form-group">
+            <label>Correo Electrónico</label>
+            <input type="email" id="loginEmail" required placeholder="tu@correo.com" />
+          </div>
+          <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" id="loginPassword" required placeholder="••••••••" />
+          </div>
+          <button type="submit" class="btn-primary" id="btnLogin">Entrar al Sistema</button>
+          <div id="loginError" class="error-msg"></div>
+        </form>
+      </section>
+
+      <!-- Pantalla Principal (Catálogo Mánager) -->
+      <section id="dashboardSection" class="panel hidden">
+        <h2>Agregar Nueva Planta</h2>
+        <form id="addPlantForm">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Nombre de la Planta</label>
+              <input type="text" id="plantName" required placeholder="Ej: Helecho Boston" />
+            </div>
+            
+            <div class="form-group">
+              <label>Categoría</label>
+              <select id="plantCategory" required>
+                <option value="ornamental">Ornamentales</option>
+                <option value="sombra">De Sombra</option>
+                <option value="palma">Palmas</option>
+                <option value="florales">Florales</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>Texto de Resalte (Badge)</label>
+              <input type="text" id="plantBadge" required placeholder="Ej: Top Ventas, Novedad..." />
+            </div>
+
+            <div class="form-group">
+              <label>Precio o Etiqueta inferior</label>
+              <input type="text" id="plantPrice" required placeholder="Ej: Popular, $150 MXN..." />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción Breve</label>
+            <textarea id="plantDescription" rows="3" required placeholder="Describe por qué es perfecta para los clientes..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Fotografía (JPG/PNG)</label>
+            <div class="upload-area" id="uploadArea">
+              <input type="file" id="plantImage" accept="image/*" required />
+              <div class="upload-feedback">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span id="uploadText">Haz clic para seleccionar la imagen</span>
+              </div>
+            </div>
+            <!-- Preview de la imagen seleccionada -->
+            <img id="imagePreview" class="hidden preview-img" />
+          </div>
+
+          <button type="submit" class="btn-primary btn-large" id="btnSubmitPlant">Subir al Catálogo Público</button>
+          <div id="uploadMessage" class="status-msg"></div>
+        </form>
+      </section>
+    </div>
+
+    <!-- El script como módulo para usar imports de firebase -->
+    <script type="module" src="./js/admin.js"></script>
+  </body>
+</html>

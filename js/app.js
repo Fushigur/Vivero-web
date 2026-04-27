@@ -71,8 +71,9 @@ AOS.init({
           button.classList.add("active");
 
           const filter = button.dataset.filter;
+          const currentProductCards = document.querySelectorAll(".product-card");
 
-          productCards.forEach((card) => {
+          currentProductCards.forEach((card) => {
             const category = card.dataset.category;
             if (filter === "all" || category === filter) {
               card.classList.remove("hidden");
