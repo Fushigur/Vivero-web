@@ -57,7 +57,6 @@ const btnCancelEdit = document.getElementById("btnCancelEdit");
 const plantNameInput = document.getElementById("plantName");
 const plantCategoryInput = document.getElementById("plantCategory");
 const plantBadgeInput = document.getElementById("plantBadge");
-const plantPriceInput = document.getElementById("plantPrice");
 const plantDescriptionInput = document.getElementById("plantDescription");
 
 // Control de Sesión Acual
@@ -161,7 +160,6 @@ addPlantForm.addEventListener("submit", async (e) => {
     const plantName = plantNameInput.value;
     const plantCategory = plantCategoryInput.value;
     const plantBadge = plantBadgeInput.value;
-    const plantPrice = plantPriceInput.value;
     const plantDescription = plantDescriptionInput.value;
 
     if (editModeId) {
@@ -170,7 +168,6 @@ addPlantForm.addEventListener("submit", async (e) => {
         name: plantName,
         category: plantCategory,
         badge: plantBadge,
-        priceLabel: plantPrice,
         description: plantDescription,
         imageUrl: finalImageUrl
       });
@@ -181,7 +178,6 @@ addPlantForm.addEventListener("submit", async (e) => {
         name: plantName,
         category: plantCategory,
         badge: plantBadge,
-        priceLabel: plantPrice,
         description: plantDescription,
         imageUrl: finalImageUrl,
         createdAt: serverTimestamp()
@@ -256,7 +252,6 @@ async function loadPlants() {
         plantNameInput.value = data.name;
         plantCategoryInput.value = data.category;
         plantBadgeInput.value = data.badge;
-        plantPriceInput.value = data.priceLabel;
         plantDescriptionInput.value = data.description;
         
         imagePreview.src = data.imageUrl;
@@ -333,3 +328,59 @@ btnCancelEdit.addEventListener("click", () => {
   resetEditMode();
   showMsg("", true);
 });
+
+// === LOGICA IMPORTACION AUTOMATICA DE LOTE ===
+const btnImportBatch = document.getElementById("btnImportBatch");
+if (btnImportBatch) {
+  btnImportBatch.addEventListener("click", async () => {
+    const plantsToImport = [
+      { name: "Alocasia Variegada", img: "Alocasia bariegadaAlocasia bariegada.jpg", category: "ornamental", badge: "Exclusiva" },
+      { name: "Alocasia", img: "Alocasia.jpg", category: "ornamental", badge: "Nueva" },
+      { name: "Ave de Paraíso", img: "Ave de paraíso.jpg", category: "florales", badge: "Destacado" },
+      { name: "Begonia", img: "Begonia.jpg", category: "ornamental", badge: "Colorida" },
+      { name: "Bromelia Variegada", img: "Bromelia bariegada.jpg", category: "ornamental", badge: "Exótica" },
+      { name: "Chile Habanero", img: "Chile abanero.jpg", category: "ornamental", badge: "Huerto" },
+      { name: "Coralito", img: "Coralito o lágrimas de Cupido.jpg", category: "florales", badge: "Hermosa" },
+      { name: "Corona de Cristo Rosada", img: "Corana de cristo rosada de flores pequeñas.jpg", category: "florales", badge: "Top Ventas" },
+      { name: "Corona de Cristo Roja", img: "Corona de Cristo roja.jpg", category: "florales", badge: "Top Ventas" },
+      { name: "Drácena Roja", img: "Dracena roja.jpg", category: "ornamental", badge: "Colorida" },
+      { name: "Helecho Monedas", img: "Elecho monedas.jpg", category: "sombra", badge: "Novedad" },
+      { name: "Espárragos", img: "Esparagos.jpg", category: "sombra", badge: "Follaje" },
+      { name: "Filodendro Pink", img: "Filodendro pink.jpg", category: "ornamental", badge: "Exclusiva" },
+      { name: "Pata de Vaca", img: "Flores pata de vaca.jpg", category: "florales", badge: "Árbol" },
+      { name: "Geranio Rojo", img: "Geranio roja.jpg", category: "florales", badge: "Tradicional" },
+      { name: "Ixora Enana", img: "Ixora enana.jpg", category: "florales", badge: "Resistente" },
+      { name: "Mona Lisa", img: "Mona lisa.jpg", category: "florales", badge: "Elegante" },
+      { name: "Payasitos", img: "Payasitos.jpg", category: "florales", badge: "Colorida" },
+      { name: "Pino Ciprés", img: "Pino cipres.jpg", category: "ornamental", badge: "Exterior" },
+      { name: "Trébol de la Suerte", img: "Trébol de la suerte.jpg", category: "ornamental", badge: "Buena Suerte" },
+      { name: "Zamioculcas", img: "Zamioculcas.jpg", category: "sombra", badge: "Interior" }
+    ];
+
+    const confirmed = confirm(`¿Quieres importar automáticamente estas ${plantsToImport.length} plantas al catálogo de Firebase?`);
+    if (!confirmed) return;
+
+    btnImportBatch.disabled = true;
+    btnImportBatch.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo a Firebase...';
+
+    try {
+      for (const plant of plantsToImport) {
+        await addDoc(collection(db, "products"), {
+          name: plant.name,
+          category: plant.category,
+          badge: plant.badge,
+          description: "Hermosa planta lista para darle vida a tu espacio. Cómprala en Vivero Elizabeht Flores.",
+          imageUrl: `./assets/images/${plant.img}`,
+          createdAt: serverTimestamp()
+        });
+      }
+      alert("¡Importación exitosa! Las 21 plantas ya están guardadas en la base de datos.");
+      loadPlants(); // Recargar visualmente
+      btnImportBatch.style.display = 'none'; // Ocultar para evitar duplicados
+    } catch (err) {
+      alert("Hubo un error al importar: " + err.message);
+      btnImportBatch.disabled = false;
+      btnImportBatch.innerHTML = '<i class="fas fa-magic"></i> Importar Automáticamente Plantas Nuevas';
+    }
+  });
+}
