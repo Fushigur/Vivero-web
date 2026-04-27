@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       article.dataset.category = data.category;
       article.setAttribute("data-aos", "fade-up");
       
+      const waMessage = `¡Hola! Me interesa la planta "${data.name}". Puedes ver su foto aquí: ${data.imageUrl}`;
+      const waUrl = `https://wa.me/529842342665?text=${encodeURIComponent(waMessage)}`;
+
       article.innerHTML = `
         <div class="product-image">
           <img loading="lazy" src="${data.imageUrl}" alt="${data.name}" />
@@ -25,10 +28,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="product-content">
           <h3>${data.name}</h3>
           <p>${data.description}</p>
-          <div class="product-meta">
-            <span class="price">${data.priceLabel}</span>
-            <a href="#contacto" class="btn-main" style="padding: 0.8rem 1rem">
-              <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Pedir
+          <div class="product-meta" style="justify-content: center;">
+            <a href="${waUrl}" target="_blank" class="btn-main" style="padding: 0.8rem 1rem; width: 100%; text-align: center;">
+              <i class="fab fa-whatsapp" style="margin-right: 5px;"></i> Pedir Planta
             </a>
           </div>
         </div>
