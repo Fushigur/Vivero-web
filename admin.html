@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
@@ -19,23 +19,39 @@
     <div class="admin-container">
       <header class="admin-header">
         <h1>🌱 Vivero Admin</h1>
-        <button id="btnLogout" class="hidden"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</button>
+        <button id="btnLogout" class="hidden">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
       </header>
 
       <!-- Pantalla de Login -->
       <section id="loginSection" class="panel show">
         <h2>Iniciar Sesión</h2>
-        <p>Ingresa tus credenciales de Firebase para administrar el catálogo.</p>
+        <p>
+          Ingresa tus credenciales de Firebase para administrar el catálogo.
+        </p>
         <form id="loginForm">
           <div class="form-group">
             <label>Correo Electrónico</label>
-            <input type="email" id="loginEmail" required placeholder="tu@correo.com" />
+            <input
+              type="email"
+              id="loginEmail"
+              required
+              placeholder="tu@correo.com"
+            />
           </div>
           <div class="form-group">
             <label>Contraseña</label>
-            <input type="password" id="loginPassword" required placeholder="••••••••" />
+            <input
+              type="password"
+              id="loginPassword"
+              required
+              placeholder="••••••••"
+            />
           </div>
-          <button type="submit" class="btn-primary" id="btnLogin">Entrar al Sistema</button>
+          <button type="submit" class="btn-primary" id="btnLogin">
+            Entrar al Sistema
+          </button>
           <div id="loginError" class="error-msg"></div>
         </form>
       </section>
@@ -47,9 +63,14 @@
           <div class="form-grid">
             <div class="form-group">
               <label>Nombre de la Planta</label>
-              <input type="text" id="plantName" required placeholder="Ej: Helecho Boston" />
+              <input
+                type="text"
+                id="plantName"
+                required
+                placeholder="Ej: Helecho Boston"
+              />
             </div>
-            
+
             <div class="form-group">
               <label>Categoría</label>
               <select id="plantCategory" required>
@@ -59,21 +80,36 @@
                 <option value="florales">Florales</option>
               </select>
             </div>
-            
+
             <div class="form-group">
               <label>Texto de Resalte (Badge)</label>
-              <input type="text" id="plantBadge" required placeholder="Ej: Top Ventas, Novedad..." />
+              <input
+                type="text"
+                id="plantBadge"
+                required
+                placeholder="Ej: Top Ventas, Novedad..."
+              />
             </div>
 
             <div class="form-group">
               <label>Precio o Etiqueta inferior</label>
-              <input type="text" id="plantPrice" required placeholder="Ej: Popular, $150 MXN..." />
+              <input
+                type="text"
+                id="plantPrice"
+                required
+                placeholder="Ej: Popular, $150 MXN..."
+              />
             </div>
           </div>
 
           <div class="form-group">
             <label>Descripción Breve</label>
-            <textarea id="plantDescription" rows="3" required placeholder="Describe por qué es perfecta para los clientes..."></textarea>
+            <textarea
+              id="plantDescription"
+              rows="3"
+              required
+              placeholder="Describe por qué es perfecta para los clientes..."
+            ></textarea>
           </div>
 
           <div class="form-group">
@@ -89,17 +125,30 @@
             <img id="imagePreview" class="hidden preview-img" />
           </div>
 
-          <button type="submit" class="btn-primary btn-large" id="btnSubmitPlant">Subir al Catálogo Público</button>
+          <button
+            type="submit"
+            class="btn-primary btn-large"
+            id="btnSubmitPlant"
+          >
+            Subir al Catálogo Público
+          </button>
           <div id="uploadMessage" class="status-msg"></div>
         </form>
 
         <hr class="separator" />
 
         <h2 class="section-title">Plantas Existentes</h2>
-        <p style="color: var(--gray); margin-bottom: 1.5rem;">Carga tu listado desde la nube para eliminar ejemplares.</p>
-        
+        <p style="color: var(--gray); margin-bottom: 1.5rem">
+          Carga tu listado desde la nube para eliminar ejemplares.
+        </p>
+
         <div id="plantsListContainer" class="plants-list">
-          <p id="loadingPlants" style="text-align: center; color: var(--primary);">Cargando tus plantas...</p>
+          <p
+            id="loadingPlants"
+            style="text-align: center; color: var(--primary)"
+          >
+            Cargando tus plantas...
+          </p>
         </div>
       </section>
     </div>
@@ -107,9 +156,14 @@
     <!-- Modal de Confirmación -->
     <div id="deleteModal" class="modal-overlay hidden">
       <div class="modal-content">
-        <div class="modal-icon warning"><i class="fas fa-exclamation-triangle"></i></div>
+        <div class="modal-icon warning">
+          <i class="fas fa-exclamation-triangle"></i>
+        </div>
         <h3>¿Eliminar Planta?</h3>
-        <p>Estás a punto de eliminar esta planta de forma permanente de tu catálogo público.</p>
+        <p>
+          Estás a punto de eliminar esta planta de forma permanente de tu
+          catálogo público.
+        </p>
         <div class="modal-actions">
           <button id="btnCancelDelete" class="btn-secondary">Cancelar</button>
           <button id="btnConfirmDelete" class="btn-danger">Sí, eliminar</button>
