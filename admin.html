@@ -16,53 +16,74 @@
     <link rel="stylesheet" href="./css/admin.css" />
   </head>
   <body>
-    <div class="admin-container">
+    <!-- PANTALLA DE LOGIN FULLSCREEN -->
+    <section id="loginSection" class="login-split-screen show">
+      <div class="login-split-left">
+        <img src="./assets/images/login-illustration.png" alt="Invernadero Tropical" class="login-illustration" />
+        <div class="login-left-content">
+          <h2>Bienvenido al Sistema</h2>
+          <p>Gestiona tu vivero con amor, controlando el inventario de manera fluida y profesional.</p>
+        </div>
+      </div>
+      <div class="login-split-right">
+        <div class="login-form-container">
+          <div class="login-header">
+            <i class="fas fa-leaf login-logo-icon"></i>
+            <h2>Iniciar Sesión</h2>
+            <p>Ingresa tus credenciales de Firebase para continuar.</p>
+          </div>
+          
+          <form id="loginForm">
+            <div class="form-group floating-group">
+              <input
+                type="email"
+                id="loginEmail"
+                required
+                placeholder=" "
+                class="floating-input"
+              />
+              <label class="floating-label">Correo Electrónico</label>
+            </div>
+            <div class="form-group floating-group">
+              <input
+                type="password"
+                id="loginPassword"
+                required
+                placeholder=" "
+                class="floating-input"
+              />
+              <label class="floating-label">Contraseña</label>
+            </div>
+            
+            <button type="submit" class="btn-primary btn-login-animated" id="btnLogin">
+              Entrar al Sistema <i class="fas fa-arrow-right"></i>
+            </button>
+            <div id="loginError" class="error-msg"></div>
+          </form>
+          
+          <div class="login-footer-link">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Volver a la Tienda</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANTALLA PRINCIPAL DEL ADMIN -->
+    <div class="admin-container hidden" id="dashboardSection">
       <header class="admin-header">
         <h1>🌱 Vivero Admin</h1>
         <div style="display: flex; gap: 10px; align-items: center;">
           <a href="index.html" class="btn-outline" style="text-decoration: none; padding: 0.5rem 1rem; font-size: 0.9rem;">
             <i class="fas fa-home"></i> Volver a la Tienda
           </a>
-          <button id="btnLogout" class="hidden">
+          <button id="btnLogout">
             <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
           </button>
         </div>
       </header>
 
-      <!-- Pantalla de Login -->
-      <section id="loginSection" class="panel show">
-        <h2>Iniciar Sesión</h2>
-        <p>
-          Ingresa tus credenciales de Firebase para administrar el catálogo.
-        </p>
-        <form id="loginForm">
-          <div class="form-group">
-            <label>Correo Electrónico</label>
-            <input
-              type="email"
-              id="loginEmail"
-              required
-              placeholder="tu@correo.com"
-            />
-          </div>
-          <div class="form-group">
-            <label>Contraseña</label>
-            <input
-              type="password"
-              id="loginPassword"
-              required
-              placeholder="••••••••"
-            />
-          </div>
-          <button type="submit" class="btn-primary" id="btnLogin">
-            Entrar al Sistema
-          </button>
-          <div id="loginError" class="error-msg"></div>
-        </form>
-      </section>
-
       <!-- Pantalla Principal (Catálogo Mánager) -->
-      <section id="dashboardSection" class="panel hidden dashboard-panel">
+      <section class="panel dashboard-panel" style="display: block;">
         <div class="dashboard-grid">
           <!-- Columna Izquierda: Formulario -->
           <div class="dashboard-sidebar">

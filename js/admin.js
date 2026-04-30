@@ -84,7 +84,7 @@ loginForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   loginError.textContent = "";
   btnLogin.disabled = true;
-  btnLogin.textContent = "Verificando...";
+  btnLogin.innerHTML = 'Verificando... <i class="fas fa-spinner fa-spin"></i>';
 
   try {
     await signInWithEmailAndPassword(
@@ -99,7 +99,7 @@ loginForm.addEventListener("submit", async (e) => {
     console.error(error);
   } finally {
     btnLogin.disabled = false;
-    btnLogin.textContent = "Entrar al Sistema";
+    btnLogin.innerHTML = 'Entrar al Sistema <i class="fas fa-arrow-right"></i>';
   }
 });
 

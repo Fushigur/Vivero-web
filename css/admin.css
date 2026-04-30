@@ -18,10 +18,16 @@ body {
   background-color: var(--bg);
   color: var(--dark);
   min-height: 100vh;
+  margin: 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem 1rem;
+  flex-direction: column;
+}
+
+.admin-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .admin-container {
@@ -66,7 +72,224 @@ body {
 
 .panel.show {
   display: block;
+  animation: fadeIn 0.4s ease forwards;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+   LOGIN FULLSCREEN SPLIT-SCREEN
+========================================= */
+.login-split-screen {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--white);
+  z-index: 1000;
+}
+
+.login-split-screen.show {
+  display: flex;
+  animation: fadeIn 0.6s ease forwards;
+}
+
+.login-split-left {
+  flex: 1;
+  background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem;
+}
+
+.login-illustration {
+  width: 80%;
+  max-width: 500px;
+  object-fit: contain;
+  margin-bottom: 2rem;
+  animation: float 6s ease-in-out infinite;
+  filter: drop-shadow(0 20px 30px rgba(0,0,0,0.1));
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
+}
+
+.login-left-content {
+  text-align: center;
+  color: var(--primary);
+  z-index: 2;
+}
+
+.login-left-content h2 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.login-left-content p {
+  font-size: 1.1rem;
+  opacity: 0.8;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.login-split-right {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background: var(--white);
+}
+
+.login-form-container {
+  width: 100%;
+  max-width: 400px;
+  animation: slideUpFade 0.8s ease forwards;
+}
+
+@keyframes slideUpFade {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.login-logo-icon {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  background: #e8f5e9;
+  padding: 1.2rem;
+  border-radius: 50%;
+}
+
+.login-header h2 {
+  font-size: 2rem;
+  color: var(--dark);
+  margin-bottom: 0.5rem;
+}
+
+.login-header p {
+  color: var(--gray);
+}
+
+/* Estilos de input flotantes premium */
+.floating-group {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.floating-input {
+  width: 100%;
+  padding: 1.2rem 1rem 0.8rem;
+  font-size: 1rem;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.floating-input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(47, 111, 31, 0.1);
+}
+
+.floating-label {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  transform: translateY(-50%);
+  color: var(--gray);
+  pointer-events: none;
+  transition: all 0.3s ease;
+  background: var(--white);
+  padding: 0 4px;
+}
+
+/* Flotar hacia arriba cuando está enfocado o no está vacío (mediante placeholder=" ") */
+.floating-input:focus ~ .floating-label,
+.floating-input:not(:placeholder-shown) ~ .floating-label {
+  top: 0;
+  font-size: 0.85rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.btn-login-animated {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.btn-login-animated i {
+  transition: transform 0.3s ease;
+}
+
+.btn-login-animated:hover i {
+  transform: translateX(5px);
+}
+
+.login-footer-link {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.login-footer-link a {
+  color: var(--gray);
+  text-decoration: none;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.login-footer-link a:hover {
+  color: var(--primary);
+}
+
+@media (max-width: 900px) {
+  .login-split-screen.show {
+    flex-direction: column;
+  }
+  .login-split-left {
+    padding: 2rem;
+    flex: 0.4;
+  }
+  .login-illustration {
+    width: 150px;
+    margin-bottom: 1rem;
+  }
+  .login-left-content h2 {
+    font-size: 1.5rem;
+  }
+  .login-left-content p {
+    font-size: 0.9rem;
+  }
+}
+
+/* =========================================
+   FIN LOGIN
+========================================= */
 
 .panel h2 {
   margin-bottom: 0.5rem;
