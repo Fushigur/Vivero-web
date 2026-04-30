@@ -14,12 +14,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
     const snapshot = await getDocs(q);
 
+    const uniqueCategories = new Set();
+    const articles = [];
+
     // Inyectamos cada tarjeta nueva proveniente de la nube
     snapshot.forEach((doc) => {
       const data = doc.data();
+      if (data.category) {
+        uniqueCategories.add(data.category);
+      }
+
       const article = document.createElement("article");
       article.className = "product-card firebase-card";
-      article.dataset.category = data.category;
+      article.dataset.category = data.category || "otro";
       article.setAttribute("data-aos", "fade-up");
 
       const waMessage = `¡Hola! Me interesa la planta "${data.name}". Puedes ver su foto aquí: ${data.imageUrl}`;
@@ -42,7 +49,44 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
       // Añadimos al inicio (prepend) para que aprenzan primero
       catalogGrid.prepend(article);
+      articles.push(article);
     });
+
+    // Lógica de creación de botones dinámicos
+    const filterContainer = document.getElementById("filterButtonsContainer");
+    if (filterContainer && uniqueCategories.size > 0) {
+      uniqueCategories.forEach(category => {
+        const btn = document.createElement("button");
+        btn.className = "filter-btn";
+        btn.dataset.filter = category;
+        // Capitalizar la primera letra
+        btn.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        filterContainer.appendChild(btn);
+      });
+
+      // Lógica de filtrado al hacer click
+      const allFilterBtns = filterContainer.querySelectorAll(".filter-btn");
+      allFilterBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          // Remover active de todos
+          allFilterBtns.forEach(b => b.classList.remove("active"));
+          // Agregar active al clickeado
+          btn.classList.add("active");
+
+          const filterValue = btn.dataset.filter;
+
+          // Mostrar/ocultar artículos
+          catalogGrid.querySelectorAll(".product-card").forEach(card => {
+            if (filterValue === "all" || card.dataset.category === filterValue) {
+              card.style.display = "block";
+            } else {
+              card.style.display = "none";
+            }
+          });
+        });
+      });
+    }
+
   } catch (err) {
     console.error("Error cargando el catálogo de Firebase:", err);
   }

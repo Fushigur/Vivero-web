@@ -107,12 +107,17 @@
 
                 <div class="form-group">
                   <label>Categoría</label>
-                  <select id="plantCategory" required>
-                    <option value="ornamental">Ornamentales</option>
-                    <option value="sombra">De Sombra</option>
-                    <option value="palma">Palmas</option>
-                    <option value="florales">Florales</option>
-                  </select>
+                  <input 
+                    type="text" 
+                    id="plantCategory" 
+                    list="categoryList" 
+                    required 
+                    placeholder="Escribe o selecciona..." 
+                    autocomplete="off"
+                  />
+                  <datalist id="categoryList">
+                    <!-- Opciones inyectadas dinámicamente -->
+                  </datalist>
                 </div>
 
                 <div class="form-group">

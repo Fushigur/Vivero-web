@@ -267,9 +267,15 @@ async function loadPlants() {
       totalPlantsEl.textContent = snapshot.size;
     }
 
+    const uniqueCategories = new Set();
+
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
       const id = docSnap.id;
+      
+      if (data.category) {
+        uniqueCategories.add(data.category);
+      }
 
       const row = document.createElement("div");
       row.className = "admin-plant-row";
@@ -325,6 +331,18 @@ async function loadPlants() {
 
       container.appendChild(row);
     });
+
+    // Poblar datalist con categorías únicas
+    const datalist = document.getElementById("categoryList");
+    if (datalist) {
+      datalist.innerHTML = "";
+      uniqueCategories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        datalist.appendChild(option);
+      });
+    }
+
   } catch (error) {
     console.error("Error al cargar lista:", error);
     container.innerHTML =
