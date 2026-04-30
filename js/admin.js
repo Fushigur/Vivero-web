@@ -1,11 +1,11 @@
 import { auth, db, storage } from "./firebase-config.js";
-import { 
-  signInWithEmailAndPassword, 
-  onAuthStateChanged, 
-  signOut 
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js";
-import { 
-  collection, 
+import {
+  collection,
   addDoc,
   serverTimestamp,
   getDocs,
@@ -13,12 +13,12 @@ import {
   orderBy,
   deleteDoc,
   updateDoc,
-  doc
+  doc,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL 
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js";
 
 // DOM Elements
@@ -87,10 +87,15 @@ loginForm.addEventListener("submit", async (e) => {
   btnLogin.textContent = "Verificando...";
 
   try {
-    await signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+    await signInWithEmailAndPassword(
+      auth,
+      loginEmail.value,
+      loginPassword.value,
+    );
     // onAuthStateChanged manejará el cambio de pantalla
   } catch (error) {
-    loginError.textContent = "Credenciales incorrectas o usuario no encontrado.";
+    loginError.textContent =
+      "Credenciales incorrectas o usuario no encontrado.";
     console.error(error);
   } finally {
     btnLogin.disabled = false;
@@ -110,10 +115,10 @@ plantImageInput.addEventListener("change", (e) => {
     selectedFile = file;
     uploadText.textContent = file.name;
     const reader = new FileReader();
-    reader.onload = function(e) {
+    reader.onload = function (e) {
       imagePreview.src = e.target.result;
       imagePreview.classList.remove("hidden");
-    }
+    };
     reader.readAsDataURL(file);
   } else {
     selectedFile = null;
@@ -126,7 +131,7 @@ plantImageInput.addEventListener("change", (e) => {
 // Subir Planta Nueva a Firebase
 addPlantForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  
+
   if (!editModeId && !selectedFile) {
     showMsg("Por favor, selecciona una imagen.", false);
     return;
@@ -143,19 +148,25 @@ addPlantForm.addEventListener("submit", async (e) => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append("image", selectedFile);
-      
-      const imbbResponse = await fetch("https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff", {
-        method: "POST",
-        body: formData
-      });
-      
+
+      const imbbResponse = await fetch(
+        "https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
       const imgbbData = await imbbResponse.json();
       if (!imgbbData.success) {
-        throw new Error("ImgBB falló: " + (imgbbData.error ? imgbbData.error.message : "Desconocido"));
+        throw new Error(
+          "ImgBB falló: " +
+            (imgbbData.error ? imgbbData.error.message : "Desconocido"),
+        );
       }
       finalImageUrl = imgbbData.data.url;
     }
-    
+
     // Obtener los valores del form
     const plantName = plantNameInput.value;
     const plantCategory = plantCategoryInput.value;
@@ -169,7 +180,7 @@ addPlantForm.addEventListener("submit", async (e) => {
         category: plantCategory,
         badge: plantBadge,
         description: plantDescription,
-        imageUrl: finalImageUrl
+        imageUrl: finalImageUrl,
       });
       showMsg("¡Planta actualizada exitosamente!", true);
     } else {
@@ -180,7 +191,7 @@ addPlantForm.addEventListener("submit", async (e) => {
         badge: plantBadge,
         description: plantDescription,
         imageUrl: finalImageUrl,
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
       });
       showMsg("¡Planta agregada exitosamente al catálogo visual!", true);
     }
@@ -189,55 +200,57 @@ addPlantForm.addEventListener("submit", async (e) => {
     plantImageInput.dispatchEvent(new Event("change")); // Limpiar preview
     resetEditMode();
     loadPlants(); // Recargar la lista
-
   } catch (error) {
     console.error("Error al publicar:", error);
     showMsg("Hubo un error al subir la planta: " + error.message, false);
   } finally {
     btnSubmitPlant.disabled = false;
-    btnSubmitPlant.textContent = editModeId ? "Guardar Cambios" : "Subir al Catálogo Público";
+    btnSubmitPlant.textContent = editModeId
+      ? "Guardar Cambios"
+      : "Subir al Catálogo Público";
   }
 });
 
 const Toast = Swal.mixin({
   toast: true,
-  position: 'top-end',
+  position: "top-end",
   showConfirmButton: false,
   timer: 3000,
   timerProgressBar: true,
   didOpen: (toast) => {
     toast.onmouseenter = Swal.stopTimer;
     toast.onmouseleave = Swal.resumeTimer;
-  }
+  },
 });
 
 function showMsg(text, isSuccess) {
   uploadMessage.textContent = text;
-  uploadMessage.className = "status-msg " + (isSuccess ? "success" : "error-msg");
+  uploadMessage.className =
+    "status-msg " + (isSuccess ? "success" : "error-msg");
   if (text) {
     Toast.fire({
-      icon: isSuccess ? 'success' : 'error',
-      title: text
+      icon: isSuccess ? "success" : "error",
+      title: text,
     });
   }
 }
 
 async function loadPlants() {
   const container = document.getElementById("plantsListContainer");
-  if(!container) return;
+  if (!container) return;
   container.innerHTML = `
     <div class="spinner-container" id="loadingPlants">
       <div class="modern-spinner"></div>
       <p>Cargando catálogo...</p>
     </div>
   `;
-  
+
   try {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
     const snapshot = await getDocs(q);
     container.innerHTML = ""; // Limpiar antes de pintar
 
-    if(snapshot.empty) {
+    if (snapshot.empty) {
       container.innerHTML = `
         <div style="text-align:center; padding: 3rem 1rem; color: var(--gray);">
           <i class="fas fa-seedling" style="font-size: 3rem; color: #e0e0e0; margin-bottom: 1rem;"></i>
@@ -257,7 +270,7 @@ async function loadPlants() {
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
       const id = docSnap.id;
-      
+
       const row = document.createElement("div");
       row.className = "admin-plant-row";
       row.innerHTML = `
@@ -288,15 +301,15 @@ async function loadPlants() {
         plantCategoryInput.value = data.category;
         plantBadgeInput.value = data.badge;
         plantDescriptionInput.value = data.description;
-        
+
         imagePreview.src = data.imageUrl;
         imagePreview.classList.remove("hidden");
         uploadText.textContent = "Haz clic para cambiar imagen (opcional)";
-        
+
         formTitle.textContent = "Editando Planta: " + data.name;
         btnSubmitPlant.textContent = "Guardar Cambios";
         btnCancelEdit.classList.remove("hidden");
-        
+
         // Scroll hacia arriba
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
@@ -314,7 +327,8 @@ async function loadPlants() {
     });
   } catch (error) {
     console.error("Error al cargar lista:", error);
-    container.innerHTML = '<p style="color:red; text-align:center;">Hubo un error de conexión.</p>';
+    container.innerHTML =
+      '<p style="color:red; text-align:center;">Hubo un error de conexión.</p>';
   }
 }
 
@@ -331,13 +345,13 @@ btnConfirmDelete.addEventListener("click", async () => {
     btnConfirmDelete.disabled = true;
     btnConfirmDelete.textContent = "Borrando...";
     buttonToDeleteEl.innerHTML = "Borrando...";
-    
+
     try {
       await deleteDoc(doc(db, "products", plantToDeleteId));
       loadPlants(); // Refrescar lista visual
-      Toast.fire({ icon: 'success', title: 'Planta eliminada' });
-    } catch(err) {
-      Swal.fire('Error', 'Error al borrar: ' + err.message, 'error');
+      Toast.fire({ icon: "success", title: "Planta eliminada" });
+    } catch (err) {
+      Swal.fire("Error", "Error al borrar: " + err.message, "error");
     } finally {
       deleteModal.classList.remove("show");
       deleteModal.classList.add("hidden");
@@ -370,43 +384,191 @@ const btnImportBatch = document.getElementById("btnImportBatch");
 if (btnImportBatch) {
   btnImportBatch.addEventListener("click", async () => {
     const plantsToImport = [
-      { name: "Alocasia Variegada", img: "Alocasia bariegadaAlocasia bariegada.jpg", category: "ornamental", badge: "Exclusiva", description: "Una joya botánica con hojas jaspeadas únicas. Perfecta para coleccionistas y espacios de interior bien iluminados." },
-      { name: "Alocasia", img: "Alocasia.jpg", category: "ornamental", badge: "Nueva", description: "Conocida como 'Oreja de elefante', destaca por sus imponentes hojas que aportan un toque tropical a cualquier rincón." },
-      { name: "Ave de Paraíso", img: "Ave de paraíso.jpg", category: "florales", badge: "Destacado", description: "Espectacular planta que evoca la selva tropical. Sus flores asombrosas y hojas grandes añaden pura elegancia." },
-      { name: "Begonia", img: "Begonia.jpg", category: "ornamental", badge: "Colorida", description: "Planta muy agradecida con flores duraderas y hojas decorativas. Excelente opción para añadir color en semisombra." },
-      { name: "Bromelia Variegada", img: "Bromelia bariegada.jpg", category: "ornamental", badge: "Exótica", description: "Exótica y resistente, esta planta con hojas pintorescas dará vida a cualquier terraza o jardín luminoso." },
-      { name: "Chile Habanero", img: "Chile abanero.jpg", category: "ornamental", badge: "Huerto", description: "Comienza tu propio huerto en casa con esta planta productiva. ¡Disfruta de chiles frescos en tus propias comidas!" },
-      { name: "Coralito", img: "Coralito o lágrimas de Cupido.jpg", category: "florales", badge: "Hermosa", description: "Destaca por sus racimos de flores rojas en forma de tubo, perfectas para atraer mariposas y colibríes a tu hogar." },
-      { name: "Corona de Cristo Rosada", img: "Corana de cristo rosada de flores pequeñas.jpg", category: "florales", badge: "Top Ventas", description: "Arbusto súper resistente al sol intenso, ideal para exteriores. Sus abundantes florecillas rosadas alegran todo el año." },
-      { name: "Corona de Cristo Roja", img: "Corona de Cristo roja.jpg", category: "florales", badge: "Top Ventas", description: "Un clásico de los jardines mexicanos. Requiere poca agua y te regala floraciones rojas muy llamativas." },
-      { name: "Drácena Roja", img: "Dracena roja.jpg", category: "ornamental", badge: "Colorida", description: "Planta elegante de hojas color vino intenso que crea hermosos contrastes visuales sin apenas necesidad de mantenimiento." },
-      { name: "Helecho Monedas", img: "Elecho monedas.jpg", category: "sombra", badge: "Novedad", description: "Hermoso helecho colgante adornado con hojitas ovaladas. Fresco y muy verde, ideal para macetas en espacios de sombra." },
-      { name: "Espárragos", img: "Esparagos.jpg", category: "sombra", badge: "Follaje", description: "Follaje fino y plumoso que le da una textura muy suave a tus espacios. Una planta de sombra fantástica y fácil de cuidar." },
-      { name: "Filodendro Pink", img: "Filodendro pink.jpg", category: "ornamental", badge: "Exclusiva", description: "Una belleza de interior con destellos rosados sutiles y elegantes. Un verdadero espectáculo para quien visite tu jardín." },
-      { name: "Pata de Vaca", img: "Flores pata de vaca.jpg", category: "florales", badge: "Árbol", description: "Árbol vistoso por la curiosa forma de sus hojas bífidas y sus impresionantes flores bellas tipo orquídea." },
-      { name: "Geranio Rojo", img: "Geranio roja.jpg", category: "florales", badge: "Tradicional", description: "Una flor clásica, noble y muy duradera que nunca pasa de moda. Llena de vida tus balcones de manera instantánea." },
-      { name: "Ixora Enana", img: "Ixora enana.jpg", category: "florales", badge: "Resistente", description: "Pequeño pero poderoso arbusto que florece constantemente creando bellos ramilletes rojizos y naranjas." },
-      { name: "Mona Lisa", img: "Mona lisa.jpg", category: "florales", badge: "Elegante", description: "Flores tubulares y follaje verde oscuro vibrante. Absolutamente recomendada para decorar macetas colgantes." },
-      { name: "Payasitos", img: "Payasitos.jpg", category: "florales", badge: "Colorida", description: "Plantas muy alegres que sorprenden con sus patrones únicos mezclados en varios colores que evocan alegría y sol." },
-      { name: "Pino Ciprés", img: "Pino cipres.jpg", category: "ornamental", badge: "Exterior", description: "Árbol perenne de pino clásico. Añade una increíble estructura piramidal decorativa y aroma fresco a tu jardín exterior." },
-      { name: "Trébol de la Suerte", img: "Trébol de la suerte.jpg", category: "ornamental", badge: "Buena Suerte", description: "Pequeña y cautivadora planta que atrae la buena fortuna y resalta en interiores con su vivo tono verde intenso." },
-      { name: "Zamioculcas", img: "Zamioculcas.jpg", category: "sombra", badge: "Interior", description: "La reina de interiores. Prácticamente indestructible, requiere poca luz y agua y mantiene sus hojas lustrosas todo el año." }
+      {
+        name: "Alocasia Variegada",
+        img: "Alocasia bariegadaAlocasia bariegada.jpg",
+        category: "ornamental",
+        badge: "Exclusiva",
+        description:
+          "Una joya botánica con hojas jaspeadas únicas. Perfecta para coleccionistas y espacios de interior bien iluminados.",
+      },
+      {
+        name: "Alocasia",
+        img: "Alocasia.jpg",
+        category: "ornamental",
+        badge: "Nueva",
+        description:
+          "Conocida como 'Oreja de elefante', destaca por sus imponentes hojas que aportan un toque tropical a cualquier rincón.",
+      },
+      {
+        name: "Ave de Paraíso",
+        img: "Ave de paraíso.jpg",
+        category: "florales",
+        badge: "Destacado",
+        description:
+          "Espectacular planta que evoca la selva tropical. Sus flores asombrosas y hojas grandes añaden pura elegancia.",
+      },
+      {
+        name: "Begonia",
+        img: "Begonia.jpg",
+        category: "ornamental",
+        badge: "Colorida",
+        description:
+          "Planta muy agradecida con flores duraderas y hojas decorativas. Excelente opción para añadir color en semisombra.",
+      },
+      {
+        name: "Bromelia Variegada",
+        img: "Bromelia bariegada.jpg",
+        category: "ornamental",
+        badge: "Exótica",
+        description:
+          "Exótica y resistente, esta planta con hojas pintorescas dará vida a cualquier terraza o jardín luminoso.",
+      },
+      {
+        name: "Chile Habanero",
+        img: "Chile abanero.jpg",
+        category: "ornamental",
+        badge: "Huerto",
+        description:
+          "Comienza tu propio huerto en casa con esta planta productiva. ¡Disfruta de chiles frescos en tus propias comidas!",
+      },
+      {
+        name: "Coralito",
+        img: "Coralito o lágrimas de Cupido.jpg",
+        category: "florales",
+        badge: "Hermosa",
+        description:
+          "Destaca por sus racimos de flores rojas en forma de tubo, perfectas para atraer mariposas y colibríes a tu hogar.",
+      },
+      {
+        name: "Corona de Cristo Rosada",
+        img: "Corana de cristo rosada de flores pequeñas.jpg",
+        category: "florales",
+        badge: "Top Ventas",
+        description:
+          "Arbusto súper resistente al sol intenso, ideal para exteriores. Sus abundantes florecillas rosadas alegran todo el año.",
+      },
+      {
+        name: "Corona de Cristo Roja",
+        img: "Corona de Cristo roja.jpg",
+        category: "florales",
+        badge: "Top Ventas",
+        description:
+          "Un clásico de los jardines mexicanos. Requiere poca agua y te regala floraciones rojas muy llamativas.",
+      },
+      {
+        name: "Drácena Roja",
+        img: "Dracena roja.jpg",
+        category: "ornamental",
+        badge: "Colorida",
+        description:
+          "Planta elegante de hojas color vino intenso que crea hermosos contrastes visuales sin apenas necesidad de mantenimiento.",
+      },
+      {
+        name: "Helecho Monedas",
+        img: "Elecho monedas.jpg",
+        category: "sombra",
+        badge: "Novedad",
+        description:
+          "Hermoso helecho colgante adornado con hojitas ovaladas. Fresco y muy verde, ideal para macetas en espacios de sombra.",
+      },
+      {
+        name: "Espárragos",
+        img: "Esparagos.jpg",
+        category: "sombra",
+        badge: "Follaje",
+        description:
+          "Follaje fino y plumoso que le da una textura muy suave a tus espacios. Una planta de sombra fantástica y fácil de cuidar.",
+      },
+      {
+        name: "Filodendro Pink",
+        img: "Filodendro pink.jpg",
+        category: "ornamental",
+        badge: "Exclusiva",
+        description:
+          "Una belleza de interior con destellos rosados sutiles y elegantes. Un verdadero espectáculo para quien visite tu jardín.",
+      },
+      {
+        name: "Pata de Vaca",
+        img: "Flores pata de vaca.jpg",
+        category: "florales",
+        badge: "Árbol",
+        description:
+          "Árbol vistoso por la curiosa forma de sus hojas bífidas y sus impresionantes flores bellas tipo orquídea.",
+      },
+      {
+        name: "Geranio Rojo",
+        img: "Geranio roja.jpg",
+        category: "florales",
+        badge: "Tradicional",
+        description:
+          "Una flor clásica, noble y muy duradera que nunca pasa de moda. Llena de vida tus balcones de manera instantánea.",
+      },
+      {
+        name: "Ixora Enana",
+        img: "Ixora enana.jpg",
+        category: "florales",
+        badge: "Resistente",
+        description:
+          "Pequeño pero poderoso arbusto que florece constantemente creando bellos ramilletes rojizos y naranjas.",
+      },
+      {
+        name: "Mona Lisa",
+        img: "Mona lisa.jpg",
+        category: "florales",
+        badge: "Elegante",
+        description:
+          "Flores tubulares y follaje verde oscuro vibrante. Absolutamente recomendada para decorar macetas colgantes.",
+      },
+      {
+        name: "Payasitos",
+        img: "Payasitos.jpg",
+        category: "florales",
+        badge: "Colorida",
+        description:
+          "Plantas muy alegres que sorprenden con sus patrones únicos mezclados en varios colores que evocan alegría y sol.",
+      },
+      {
+        name: "Pino Ciprés",
+        img: "Pino cipres.jpg",
+        category: "ornamental",
+        badge: "Exterior",
+        description:
+          "Árbol perenne de pino clásico. Añade una increíble estructura piramidal decorativa y aroma fresco a tu jardín exterior.",
+      },
+      {
+        name: "Trébol de la Suerte",
+        img: "Trébol de la suerte.jpg",
+        category: "ornamental",
+        badge: "Buena Suerte",
+        description:
+          "Pequeña y cautivadora planta que atrae la buena fortuna y resalta en interiores con su vivo tono verde intenso.",
+      },
+      {
+        name: "Zamioculcas",
+        img: "Zamioculcas.jpg",
+        category: "sombra",
+        badge: "Interior",
+        description:
+          "La reina de interiores. Prácticamente indestructible, requiere poca luz y agua y mantiene sus hojas lustrosas todo el año.",
+      },
     ];
 
     const result = await Swal.fire({
-      title: '¿Importar catálogo?',
+      title: "¿Importar catálogo?",
       text: `¿Quieres importar automáticamente estas ${plantsToImport.length} plantas al catálogo de Firebase?`,
-      icon: 'question',
+      icon: "question",
       showCancelButton: true,
-      confirmButtonColor: '#2b5e3e',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Sí, importar',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: "#2b5e3e",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Sí, importar",
+      cancelButtonText: "Cancelar",
     });
     if (!result.isConfirmed) return;
 
     btnImportBatch.disabled = true;
-    btnImportBatch.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo a Firebase...';
+    btnImportBatch.innerHTML =
+      '<i class="fas fa-spinner fa-spin"></i> Subiendo a Firebase...';
 
     try {
       for (const plant of plantsToImport) {
@@ -416,16 +578,21 @@ if (btnImportBatch) {
           badge: plant.badge,
           description: plant.description,
           imageUrl: `./assets/images/${plant.img}`,
-          createdAt: serverTimestamp()
+          createdAt: serverTimestamp(),
         });
       }
-      Swal.fire('¡Importación Exitosa!', 'Las plantas ya están guardadas en la base de datos.', 'success');
+      Swal.fire(
+        "¡Importación Exitosa!",
+        "Las plantas ya están guardadas en la base de datos.",
+        "success",
+      );
       loadPlants(); // Recargar visualmente
-      btnImportBatch.style.display = 'none'; // Ocultar para evitar duplicados
+      btnImportBatch.style.display = "none"; // Ocultar para evitar duplicados
     } catch (err) {
-      Swal.fire('Error', 'Hubo un error al importar: ' + err.message, 'error');
+      Swal.fire("Error", "Hubo un error al importar: " + err.message, "error");
       btnImportBatch.disabled = false;
-      btnImportBatch.innerHTML = '<i class="fas fa-magic"></i> Importar Automáticamente Plantas Nuevas';
+      btnImportBatch.innerHTML =
+        '<i class="fas fa-magic"></i> Importar Automáticamente Plantas Nuevas';
     }
   });
 }
@@ -436,7 +603,7 @@ if (searchPlantInput) {
   searchPlantInput.addEventListener("input", (e) => {
     const term = e.target.value.toLowerCase();
     const rows = document.querySelectorAll(".admin-plant-row");
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const title = row.querySelector("h4").textContent.toLowerCase();
       const category = row.querySelector("span").textContent.toLowerCase();
       if (title.includes(term) || category.includes(term)) {

@@ -1,5 +1,10 @@
 import { db } from "./firebase-config.js";
-import { collection, getDocs, orderBy, query } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   const catalogGrid = document.getElementById("catalogGrid");
@@ -8,7 +13,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const q = query(collection(db, "products"), orderBy("createdAt", "desc"));
     const snapshot = await getDocs(q);
-    
+
     // Inyectamos cada tarjeta nueva proveniente de la nube
     snapshot.forEach((doc) => {
       const data = doc.data();
@@ -16,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       article.className = "product-card firebase-card";
       article.dataset.category = data.category;
       article.setAttribute("data-aos", "fade-up");
-      
+
       const waMessage = `¡Hola! Me interesa la planta "${data.name}". Puedes ver su foto aquí: ${data.imageUrl}`;
       const waUrl = `https://wa.me/529842342665?text=${encodeURIComponent(waMessage)}`;
 
@@ -38,7 +43,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Añadimos al inicio (prepend) para que aprenzan primero
       catalogGrid.prepend(article);
     });
-
   } catch (err) {
     console.error("Error cargando el catálogo de Firebase:", err);
   }
