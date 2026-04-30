@@ -100,11 +100,42 @@
         background: linear-gradient(135deg, var(--secondary), #6fc43b);
         color: var(--dark);
         box-shadow: 0 8px 25px rgba(137, 214, 75, 0.35);
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      .btn-main::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.4) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: skewX(-25deg);
+        transition: all 0.75s ease;
+        z-index: -1;
       }
 
       .btn-main:hover {
         transform: translateY(-3px);
         box-shadow: 0 14px 30px rgba(137, 214, 75, 0.45);
+      }
+
+      .btn-main:hover::after {
+        animation: shine 1.5s infinite;
+      }
+
+      @keyframes shine {
+        100% {
+          left: 200%;
+        }
       }
 
       .btn-outline {
@@ -246,6 +277,13 @@
         backdrop-filter: blur(10px);
         margin-bottom: 1.3rem;
         font-weight: 600;
+        animation: float 4s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-8px); }
+        100% { transform: translateY(0px); }
       }
 
       .hero h1 {
@@ -260,6 +298,49 @@
         max-width: 640px;
         color: rgba(255, 255, 255, 0.9);
         margin-bottom: 2rem;
+      }
+
+      .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        color: rgba(255,255,255,0.7);
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        animation: float 3s ease-in-out infinite;
+        z-index: 10;
+        cursor: pointer;
+      }
+
+      .mouse {
+        width: 26px;
+        height: 40px;
+        border: 2px solid rgba(255,255,255,0.7);
+        border-radius: 20px;
+        position: relative;
+      }
+
+      .wheel {
+        width: 4px;
+        height: 8px;
+        background: var(--accent);
+        border-radius: 2px;
+        position: absolute;
+        top: 6px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: scroll 2s ease-in-out infinite;
+      }
+
+      @keyframes scroll {
+        0% { transform: translate(-50%, 0); opacity: 1; }
+        100% { transform: translate(-50%, 15px); opacity: 0; }
       }
 
       .hero-actions {
@@ -361,12 +442,32 @@
         object-fit: cover;
         border-radius: 24px;
         box-shadow: var(--shadow);
+        transition: transform 0.5s ease;
+      }
+
+      .about-images img:hover {
+        transform: scale(1.03) translateY(-5px);
       }
 
       .about-images img:nth-child(1) {
         grid-row: span 2;
         height: 100%;
         min-height: 520px;
+        animation: float-slow 8s ease-in-out infinite;
+      }
+      
+      .about-images img:nth-child(2) {
+        animation: float-slow 6s ease-in-out infinite 1s;
+      }
+      
+      .about-images img:nth-child(3) {
+        animation: float-slow 7s ease-in-out infinite 2s;
+      }
+
+      @keyframes float-slow {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-12px); }
+        100% { transform: translateY(0px); }
       }
 
       .about-content h3 {
@@ -467,6 +568,14 @@
         color: var(--primary);
         font-size: 1.35rem;
         margin-bottom: 1rem;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .service-card:hover .icon {
+        transform: scale(1.15) rotate(5deg);
+        background: var(--primary);
+        color: var(--white);
+        box-shadow: 0 10px 20px rgba(47, 111, 31, 0.2);
       }
 
       .service-card h3 {
