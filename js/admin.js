@@ -144,20 +144,27 @@ addPlantForm.addEventListener("submit", async (e) => {
 
     let finalImageUrl = currentImageUrl; // Si no cambia la foto, mantendremos la actual
 
-    // 1. Subir imagen a Firebase Storage si hubo una NUEVA imagen
+    // 1. Subir imagen a ImgBB si hubo una NUEVA imagen
     if (selectedFile) {
-      // Crear un nombre único para el archivo para evitar sobrescribir imágenes existentes
-      const fileExt = selectedFile.name.split('.').pop();
-      const uniqueFileName = `catalog/${Date.now()}_${Math.random().toString(36).substring(2)}.${fileExt}`;
-      
-      // Crear referencia en Storage
-      const storageRef = ref(storage, uniqueFileName);
-      
-      // Subir archivo
-      await uploadBytes(storageRef, selectedFile);
-      
-      // Obtener la URL pública segura de Firebase Storage
-      finalImageUrl = await getDownloadURL(storageRef);
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+
+      const imbbResponse = await fetch(
+        "https://api.imgbb.com/1/upload?key=a54443db809f2172b0f1ab270b94eeff",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const imgbbData = await imbbResponse.json();
+      if (!imgbbData.success) {
+        throw new Error(
+          "ImgBB falló: " +
+            (imgbbData.error ? imgbbData.error.message : "Desconocido"),
+        );
+      }
+      finalImageUrl = imgbbData.data.url;
     }
 
     // Obtener los valores del form
