@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       article.setAttribute("data-aos", "fade-up");
 
       const waMessage = `¡Hola! Me interesa la planta "${data.name}". Puedes ver su foto aquí: ${data.imageUrl}`;
-      const waUrl = `https://wa.me/529842342665?text=${encodeURIComponent(waMessage)}`;
+      const waUrl = `https://wa.me/529842047672?text=${encodeURIComponent(waMessage)}`;
 
       article.innerHTML = `
         <div class="product-image">

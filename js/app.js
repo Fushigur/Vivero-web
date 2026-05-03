@@ -227,7 +227,7 @@ AOS.init({
           textoMensaje += `*Detalles:* ${mensaje}`;
 
           // Número de teléfono del Vivero (sin el +, solo los números)
-          const numeroWhatsApp = "529842342665";
+          const numeroWhatsApp = "529842047672";
 
           // Crear la URL
           const url = `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(textoMensaje)}`;
