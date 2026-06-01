@@ -335,6 +335,7 @@ const galleryData = {
           updateLightboxImage();
           document.getElementById("lightbox").classList.add("show");
         }
+        window.openLightboxGalleryGlobal = openLightboxGallery;
 
         function updateLightboxImage() {
           if (!currentLightboxArray.length) return;

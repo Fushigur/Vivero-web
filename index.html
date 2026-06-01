@@ -317,10 +317,24 @@
           <div class="tag">Catálogo destacado</div>
           <h2>Explora algunas de nuestras opciones</h2>
           <p>
-            Puedes usar los filtros para visualizar distintos tipos de plantas y
-            productos. Después te podemos ayudar a elegir la mejor opción para
-            tu espacio.
+            Usa el buscador o los filtros para visualizar distintos tipos de plantas. 
+            ¡O realiza nuestro test interactivo para encontrar tu planta ideal en segundos!
           </p>
+        </div>
+
+        <!-- Barra de búsqueda y Quiz CTA -->
+        <div class="catalog-controls" data-aos="fade-up">
+          <div class="search-bar-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="catalogSearchInput" placeholder="Buscar por nombre, tipo..." />
+            <button id="clearSearchBtn" class="clear-search-btn" aria-label="Limpiar búsqueda" style="display: none;">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <button id="btnOpenQuiz" class="btn-main btn-quiz-cta">
+            <i class="fas fa-magic"></i>
+            <span>¿Cuál es mi planta ideal?</span>
+          </button>
         </div>
 
         <div class="filter-buttons" id="filterButtonsContainer">
@@ -331,8 +345,122 @@
         <div class="catalog-grid" id="catalogGrid">
           <!-- Las plantas dinámicas se inyectarán aquí desde Firebase/ImgBB -->
         </div>
+
+        <!-- Botón Cargar Más -->
+        <div class="catalog-load-more" id="catalogLoadMoreContainer" style="display: none;">
+          <button id="btnLoadMore" class="btn-main">
+            <i class="fas fa-leaf"></i>
+            <span>Ver más plantas</span>
+          </button>
+        </div>
       </div>
     </section>
+
+    <!-- Modal del Quiz "Encuentra tu Planta Ideal" -->
+    <div class="quiz-modal" id="quizModal">
+      <div class="quiz-modal-content">
+        <button class="quiz-modal-close" id="btnCloseQuiz" aria-label="Cerrar test">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="quiz-header">
+          <div class="quiz-logo">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h2>Encuentra tu Planta Ideal</h2>
+          <p>Responde 3 preguntas rápidas y descubre tu match botánico perfecto 💚</p>
+          
+          <div class="quiz-progress-container">
+            <div class="quiz-progress-bar" id="quizProgressBar"></div>
+          </div>
+        </div>
+
+        <div class="quiz-body">
+          <!-- Paso 1: Ubicación -->
+          <div class="quiz-step active" data-step="1">
+            <h3>Paso 1: ¿Dónde vas a colocar tu planta principalmente?</h3>
+            <div class="quiz-options-grid">
+              <button class="quiz-option-card" data-answer="sombra">
+                <div class="option-icon">🏠</div>
+                <h4>Interior / Sombra</h4>
+                <p>Ideal para oficinas, salas o rincones alejados del sol directo.</p>
+              </button>
+              <button class="quiz-option-card" data-answer="sol">
+                <div class="option-icon">☀️</div>
+                <h4>Exterior / Sol Directo</h4>
+                <p>Perfecto para jardines exteriores, terrazas soleadas o entradas.</p>
+              </button>
+              <button class="quiz-option-card" data-answer="semisombra">
+                <div class="option-icon">🌤️</div>
+                <h4>Terraza / Semisombra</h4>
+                <p>Para espacios con luz brillante indirecta o sol suave de mañana.</p>
+              </button>
+            </div>
+          </div>
+
+          <!-- Paso 2: Cuidado / Tiempo -->
+          <div class="quiz-step" data-step="2">
+            <h3>Paso 2: ¿Cuánto tiempo tienes para su cuidado y riego?</h3>
+            <div class="quiz-options-grid">
+              <button class="quiz-option-card" data-answer="facil">
+                <div class="option-icon">🌵</div>
+                <h4>Poco tiempo (Fácil cuidado)</h4>
+                <p>Busco plantas resistentes que toleren olvidos y poco riego.</p>
+              </button>
+              <button class="quiz-option-card" data-answer="estandar">
+                <div class="option-icon">💧</div>
+                <h4>Tengo tiempo (Cuidado regular)</h4>
+                <p>Disfruto regarlas y verlas crecer día a día con atención.</p>
+              </button>
+            </div>
+            <div class="quiz-nav-buttons">
+              <button class="btn-outline btn-quiz-prev"><i class="fas fa-arrow-left"></i> Atrás</button>
+            </div>
+          </div>
+
+          <!-- Paso 3: Gusto / Objetivo -->
+          <div class="quiz-step" data-step="3">
+            <h3>Paso 3: ¿Qué es lo que más te gustaría destacar?</h3>
+            <div class="quiz-options-grid">
+              <button class="quiz-option-card" data-answer="flores">
+                <div class="option-icon">🌸</div>
+                <h4>Flores y Color</h4>
+                <p>Quiero flores hermosas que den vida y atraigan colibríes.</p>
+              </button>
+              <button class="quiz-option-card" data-answer="verde">
+                <div class="option-icon">🌿</div>
+                <h4>Follaje Verde</h4>
+                <p>Prefiero hojas grandes, exuberantes y elegantes.</p>
+              </button>
+              <button class="quiz-option-card" data-answer="huerto">
+                <div class="option-icon">🌶️</div>
+                <h4>Huerto o Aromáticas</h4>
+                <p>Plantas útiles que den frutos, chiles o aromas agradables.</p>
+              </button>
+            </div>
+            <div class="quiz-nav-buttons">
+              <button class="btn-outline btn-quiz-prev"><i class="fas fa-arrow-left"></i> Atrás</button>
+            </div>
+          </div>
+
+          <!-- Paso 4: Resultados -->
+          <div class="quiz-step" data-step="4" id="quizResultsStep">
+            <h3>🎉 ¡Tenemos tus Matches Perfectos!</h3>
+            <p class="quiz-results-subtitle">Estas plantas se adaptan idealmente a tu estilo de vida y espacio:</p>
+            
+            <div class="quiz-results-container" id="quizResultsContainer">
+              <!-- Se inyectarán los matches aquí -->
+            </div>
+
+            <div class="quiz-results-footer">
+              <button class="btn-outline" id="btnRestartQuiz">
+                <i class="fas fa-redo"></i> Volver a hacer el test
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <section class="section" id="galeria">
       <div class="container">
@@ -403,87 +531,6 @@
             />
             <div class="gallery-overlay"><h4>Jardines Frontales</h4></div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section testimonials">
-      <div class="container">
-        <div class="section-header">
-          <div class="tag">Opiniones</div>
-          <h2>Lo que dicen nuestros clientes</h2>
-          <p>
-            Esta sección ayuda mucho a dar confianza. Puedes cambiar estos
-            textos por testimonios reales de tus clientes.
-          </p>
-        </div>
-
-        <div class="testimonial-grid">
-          <article class="testimonial-card" data-aos="fade-up">
-            <div class="stars">
-              <i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i>
-            </div>
-            <p>
-              “Me ayudaron a elegir plantas para mi terraza y quedaron
-              perfectas. Además me explicaron cómo cuidarlas sin
-              complicaciones.”
-            </p>
-            <div class="testimonial-user">
-              <div class="testimonial-avatar">M</div>
-              <div>
-                <strong>María G.</strong>
-                <span>Cliente residencial</span>
-              </div>
-            </div>
-          </article>
-
-          <article
-            class="testimonial-card"
-            data-aos="fade-up"
-            data-aos-delay="100"
-          >
-            <div class="stars">
-              <i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i>
-            </div>
-            <p>
-              “El servicio fue muy profesional. Compramos plantas y macetas para
-              nuestro negocio y el resultado fue excelente.”
-            </p>
-            <div class="testimonial-user">
-              <div class="testimonial-avatar">C</div>
-              <div>
-                <strong>Carlos R.</strong>
-                <span>Cliente comercial</span>
-              </div>
-            </div>
-          </article>
-
-          <article
-            class="testimonial-card"
-            data-aos="fade-up"
-            data-aos-delay="200"
-          >
-            <div class="stars">
-              <i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i><i class="fas fa-star"></i
-              ><i class="fas fa-star"></i>
-            </div>
-            <p>
-              “Nos diseñaron un área verde más funcional y bonita. Se nota la
-              experiencia y el gusto por las plantas.”
-            </p>
-            <div class="testimonial-user">
-              <div class="testimonial-avatar">F</div>
-              <div>
-                <strong>Fernanda T.</strong>
-                <span>Proyecto de jardín</span>
-              </div>
-            </div>
-          </article>
         </div>
       </div>
     </section>
