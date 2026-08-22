@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       article.dataset.category = data.category;
       
       const waMessage = `¡Hola! Me interesa la planta "${data.name}". Puedes ver su foto aquí: ${data.imageUrl}`;
-      const waUrl = `https://wa.me/529842047672?text=${encodeURIComponent(waMessage)}`;
+      const waUrl = `https://wa.me/529842342665?text=${encodeURIComponent(waMessage)}`;
 
       article.innerHTML = `
         <div class="product-image">
@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const matchBadge = idx === 0 ? "¡Match Perfecto! 💚" : "Excelente Opción ✨";
       
       const waMessage = `¡Hola! Hice el test de plantas en su sitio web y obtuve como recomendación ideal la planta "${p.name}". ¿Tienen existencias disponibles? Foto: ${p.imageUrl}`;
-      const waUrl = `https://wa.me/529842047672?text=${encodeURIComponent(waMessage)}`;
+      const waUrl = `https://wa.me/529842342665?text=${encodeURIComponent(waMessage)}`;
 
       card.innerHTML = `
         <div class="quiz-result-badge">${matchBadge}</div>
