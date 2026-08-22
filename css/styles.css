@@ -2554,3 +2554,28 @@
         transform: scale(1);
         opacity: 1;
       }
+
+      /* Spinner de carga del catálogo */
+      .spinner-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 0;
+        color: var(--muted);
+      }
+
+      .modern-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid rgba(47, 111, 31, 0.15);
+        border-left-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }

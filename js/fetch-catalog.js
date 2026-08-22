@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       article.innerHTML = `
         <div class="product-image">
-          <img loading="lazy" src="${data.imageUrl}" alt="${data.name}" style="cursor: zoom-in;" />
+          <img loading="lazy" src="${data.imageUrl}" alt="${data.name}" style="cursor: zoom-in;" onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\' fill=\'%232f6f1f\'><rect width=\'100\' height=\'100\' fill=\'%23f4faf0\'/><path d=\'M50 25c-8.3 0-15 6.7-15 15 0 5 2.5 9.5 6.3 12.2l-3.3 22.8h24l-3.3-22.8c3.8-2.7 6.3-7.2 6.3-12.2 0-8.3-6.7-15-15-15zm0 5c5.5 0 10 4.5 10 10 0 3.7-2 6.8-5 8.7V38c0-1.7-1.3-3-3-3s-3 1.3-3 3v10.7c-3-1.9-5-5-5-8.7 0-5.5 4.5-10 10-10zm-6 40l1.8-12h8.4l1.8 12H44z\' fill=\'%232f6f1f\'/></svg>';" />
           ${data.badge ? `<span class="product-badge">${data.badge}</span>` : ""}
         </div>
         <div class="product-content">

@@ -343,7 +343,11 @@
         </div>
 
         <div class="catalog-grid" id="catalogGrid">
-          <!-- Las plantas dinámicas se inyectarán aquí desde Firebase/ImgBB -->
+          <!-- Spinner de carga inicial -->
+          <div class="spinner-container" id="loadingCatalog" style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4rem 0;">
+            <div class="modern-spinner"></div>
+            <p style="font-weight: 500; font-family: inherit;">Cargando catálogo...</p>
+          </div>
         </div>
 
         <!-- Botón Cargar Más -->
