@@ -62,27 +62,6 @@ AOS.init({
         statsObserver.observe(statsSection);
       }
 
-      const filterButtons = document.querySelectorAll(".filter-btn");
-      const productCards = document.querySelectorAll(".product-card");
-
-      filterButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          filterButtons.forEach((btn) => btn.classList.remove("active"));
-          button.classList.add("active");
-
-          const filter = button.dataset.filter;
-          const currentProductCards = document.querySelectorAll(".product-card");
-
-          currentProductCards.forEach((card) => {
-            const category = card.dataset.category;
-            if (filter === "all" || category === filter) {
-              card.classList.remove("hidden");
-            } else {
-              card.classList.add("hidden");
-            }
-          });
-        });
-      });
 
       const galleryItems = document.querySelectorAll(".gallery-item");
       const lightbox = document.getElementById("lightbox");

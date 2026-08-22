@@ -1,4 +1,4 @@
-import { auth, db, storage } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
@@ -16,11 +16,6 @@ import {
   doc,
   setDoc,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "https://www.gstatic.com/firebasejs/10.11.1/firebase-storage.js";
 
 // DOM Elements
 const loginSection = document.getElementById("loginSection");
@@ -287,15 +282,9 @@ async function loadPlants() {
       totalPlantsEl.textContent = snapshot.size;
     }
 
-    const uniqueCategories = new Set();
-
     snapshot.forEach((docSnap) => {
       const data = docSnap.data();
       const id = docSnap.id;
-      
-      if (data.category) {
-        uniqueCategories.add(data.category);
-      }
 
       const row = document.createElement("div");
       row.className = "admin-plant-row";
@@ -351,8 +340,6 @@ async function loadPlants() {
 
       container.appendChild(row);
     });
-
-    // (Poblar datalist ya no es necesario con el select dinámico de categorías)
 
   } catch (error) {
     console.error("Error al cargar lista:", error);
