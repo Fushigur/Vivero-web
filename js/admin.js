@@ -14,6 +14,7 @@ import {
   deleteDoc,
   updateDoc,
   doc,
+  setDoc,
 } from "https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js";
 import {
   ref,
@@ -33,6 +34,13 @@ const btnLogin = document.getElementById("btnLogin");
 const loginError = document.getElementById("loginError");
 const btnTogglePassword = document.getElementById("btnTogglePassword");
 const togglePasswordIcon = document.getElementById("togglePasswordIcon");
+
+const btnOpenCategoryModal = document.getElementById("btnOpenCategoryModal");
+const btnCloseCategoryModal = document.getElementById("btnCloseCategoryModal");
+const categoryModal = document.getElementById("categoryModal");
+const categoryManageList = document.getElementById("categoryManageList");
+const newCategoryInput = document.getElementById("newCategoryInput");
+const btnAddCategory = document.getElementById("btnAddCategory");
 
 const addPlantForm = document.getElementById("addPlantForm");
 const btnSubmitPlant = document.getElementById("btnSubmitPlant");
@@ -71,6 +79,7 @@ onAuthStateChanged(auth, (user) => {
     dashboardSection.classList.add("show");
     btnLogout.classList.remove("hidden");
     loadPlants();
+    loadCategories();
   } else {
     // No está logueado
     loginSection.classList.remove("hidden");
@@ -343,16 +352,7 @@ async function loadPlants() {
       container.appendChild(row);
     });
 
-    // Poblar datalist con categorías únicas
-    const datalist = document.getElementById("categoryList");
-    if (datalist) {
-      datalist.innerHTML = "";
-      uniqueCategories.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        datalist.appendChild(option);
-      });
-    }
+    // (Poblar datalist ya no es necesario con el select dinámico de categorías)
 
   } catch (error) {
     console.error("Error al cargar lista:", error);
@@ -641,5 +641,183 @@ if (searchPlantInput) {
         row.style.display = "none";
       }
     });
+  });
+}
+
+// ==========================================
+// --- GESTIÓN DE CATEGORÍAS EN FIRESTORE ---
+// ==========================================
+let loadedCategories = [];
+
+async function loadCategories() {
+  try {
+    const q = query(collection(db, "categories"), orderBy("name", "asc"));
+    const snapshot = await getDocs(q);
+    loadedCategories = [];
+    snapshot.forEach(docSnap => {
+      loadedCategories.push({
+        id: docSnap.id,
+        name: docSnap.data().name
+      });
+    });
+
+    // Si la colección de categorías está vacía (ej. primera ejecución / migración)
+    if (loadedCategories.length === 0) {
+      const uniqueCategories = new Set();
+      // Leer categorías de los productos existentes
+      const prodQ = query(collection(db, "products"));
+      const prodSnap = await getDocs(prodQ);
+      prodSnap.forEach(pDoc => {
+        const pData = pDoc.data();
+        if (pData.category) {
+          uniqueCategories.add(pData.category.trim());
+        }
+      });
+
+      if (uniqueCategories.size > 0) {
+        // Guardar cada categoría única encontrada
+        for (const catName of uniqueCategories) {
+          const catId = catName.toLowerCase().trim();
+          const formattedName = catName.charAt(0).toUpperCase() + catName.slice(1);
+          await setDoc(doc(db, "categories", catId), {
+            name: formattedName
+          });
+          loadedCategories.push({ id: catId, name: formattedName });
+        }
+        loadedCategories.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        // Si la tienda no tiene ningún producto, inicializar categorías básicas
+        const defaults = ["Sombra", "Ornamental", "Florales"];
+        for (const catName of defaults) {
+          const catId = catName.toLowerCase().trim();
+          await setDoc(doc(db, "categories", catId), { name: catName });
+          loadedCategories.push({ id: catId, name: catName });
+        }
+      }
+    }
+
+    // Poblar el dropdown select de categorías
+    const currentSelectedVal = plantCategoryInput.value;
+    plantCategoryInput.innerHTML = '<option value="">Selecciona una categoría...</option>';
+    loadedCategories.forEach(cat => {
+      const option = document.createElement("option");
+      option.value = cat.id; // se guarda en lowercase en la bd de productos
+      option.textContent = cat.name;
+      plantCategoryInput.appendChild(option);
+    });
+
+    if (currentSelectedVal) {
+      plantCategoryInput.value = currentSelectedVal;
+    }
+
+    // Renderizar la lista de edición
+    renderCategoryManageList();
+
+  } catch (error) {
+    console.error("Error al cargar categorías:", error);
+  }
+}
+
+function renderCategoryManageList() {
+  if (!categoryManageList) return;
+  categoryManageList.innerHTML = "";
+
+  loadedCategories.forEach(cat => {
+    const item = document.createElement("div");
+    item.style.display = "flex";
+    item.style.justifyContent = "space-between";
+    item.style.alignItems = "center";
+    item.style.padding = "0.6rem 0.8rem";
+    item.style.background = "#f7fbf4";
+    item.style.border = "1px solid rgba(47,111,31,0.08)";
+    item.style.borderRadius = "10px";
+    item.style.fontSize = "0.95rem";
+
+    item.innerHTML = `
+      <span style="font-weight: 500; color: var(--dark);">${cat.name}</span>
+      <button type="button" class="btn-delete-cat" data-id="${cat.id}" style="background: none; border: none; color: #e63946; cursor: pointer; padding: 4px; font-size: 0.95rem; display: flex; align-items: center; transition: color 0.2s;" title="Eliminar Categoría">
+        <i class="fas fa-trash-alt"></i>
+      </button>
+    `;
+
+    const btnDel = item.querySelector(".btn-delete-cat");
+    btnDel.addEventListener("click", async () => {
+      const result = await Swal.fire({
+        title: '¿Eliminar Categoría?',
+        text: `¿Estás seguro de eliminar la categoría "${cat.name}"? Las plantas asociadas no tendrán filtro visible hasta que las edites y les cambies de categoría.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#e63946',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      });
+
+      if (result.isConfirmed) {
+        try {
+          await deleteDoc(doc(db, "categories", cat.id));
+          Swal.fire('Eliminada', 'La categoría ha sido eliminada con éxito.', 'success');
+          loadCategories();
+        } catch (err) {
+          Swal.fire('Error', 'No se pudo eliminar la categoría: ' + err.message, 'error');
+        }
+      }
+    });
+
+    categoryManageList.appendChild(item);
+  });
+}
+
+// Agregar Categoría Nueva
+if (btnAddCategory) {
+  btnAddCategory.addEventListener("click", async () => {
+    const name = newCategoryInput.value.trim();
+    if (!name) {
+      Swal.fire('Campo vacío', 'Por favor ingresa un nombre para la categoría.', 'warning');
+      return;
+    }
+
+    const catId = name.toLowerCase().trim();
+    const exists = loadedCategories.some(cat => cat.id === catId);
+    if (exists) {
+      Swal.fire('Ya existe', 'Esta categoría ya está registrada.', 'warning');
+      return;
+    }
+
+    const formattedName = name.split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+
+    try {
+      await setDoc(doc(db, "categories", catId), {
+        name: formattedName
+      });
+      newCategoryInput.value = "";
+      Swal.fire('Agregada', 'La categoría ha sido agregada con éxito.', 'success');
+      loadCategories();
+    } catch (err) {
+      Swal.fire('Error', 'No se pudo guardar la categoría: ' + err.message, 'error');
+    }
+  });
+}
+
+// Control del Modal de Categorías
+if (btnOpenCategoryModal && categoryModal) {
+  btnOpenCategoryModal.addEventListener("click", () => {
+    categoryModal.classList.add("show");
+  });
+}
+
+if (btnCloseCategoryModal && categoryModal) {
+  btnCloseCategoryModal.addEventListener("click", () => {
+    categoryModal.classList.remove("show");
+  });
+}
+
+if (categoryModal) {
+  categoryModal.addEventListener("click", (e) => {
+    if (e.target === categoryModal) {
+      categoryModal.classList.remove("show");
+    }
   });
 }

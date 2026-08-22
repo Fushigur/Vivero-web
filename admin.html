@@ -110,18 +110,15 @@
                 </div>
 
                 <div class="form-group">
-                  <label>Categoría</label>
-                  <input 
-                    type="text" 
-                    id="plantCategory" 
-                    list="categoryList" 
-                    required 
-                    placeholder="Escribe o selecciona..." 
-                    autocomplete="off"
-                  />
-                  <datalist id="categoryList">
-                    <!-- Opciones inyectadas dinámicamente -->
-                  </datalist>
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <label style="margin: 0;">Categoría</label>
+                    <button type="button" id="btnOpenCategoryModal" style="background: none; border: none; color: var(--primary); font-size: 0.85rem; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0;">
+                      <i class="fas fa-cog"></i> Administrar
+                    </button>
+                  </div>
+                  <select id="plantCategory" required style="width: 100%; padding: 0.8rem; border: 2px solid var(--border); border-radius: 12px; font-size: 1rem; outline: none; background-color: var(--white); transition: border-color 0.3s; color: var(--dark);">
+                    <option value="">Selecciona una categoría...</option>
+                  </select>
                 </div>
 
                 <div class="form-group">
@@ -240,6 +237,32 @@
         <div class="modal-actions">
           <button id="btnCancelDelete" class="btn-secondary">Cancelar</button>
           <button id="btnConfirmDelete" class="btn-danger">Sí, eliminar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Gestión de Categorías -->
+    <div id="categoryModal" class="modal-overlay hidden">
+      <div class="modal-content" style="max-width: 500px; width: 100%; text-align: left; padding: 2.5rem; position: relative;">
+        <button type="button" id="btnCloseCategoryModal" style="position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.4rem; color: var(--primary); font-family: inherit;">Administrar Categorías</h3>
+        <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1.5rem;">Crea nuevas categorías para tus plantas o elimina las que ya no uses.</p>
+        
+        <!-- Formulario para agregar -->
+        <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
+          <input type="text" id="newCategoryInput" placeholder="Ej: Frutales, Cactus..." style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.3s; color: var(--dark);" />
+          <button type="button" id="btnAddCategory" class="btn-primary" style="padding: 0.75rem 1.2rem; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 5px; cursor: pointer; border: none; background: var(--primary); color: white;">
+            <i class="fas fa-plus"></i> Agregar
+          </button>
+        </div>
+        
+        <!-- Lista de categorías -->
+        <h4 style="margin-bottom: 0.8rem; font-size: 1.05rem; font-weight: 700; color: var(--dark); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">Categorías Existentes</h4>
+        <div id="categoryManageList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
+          <!-- Items de categoría inyectados aquí -->
         </div>
       </div>
     </div>

@@ -44,14 +44,40 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Inicializar Renderizado Paginado
     filterAndRenderProducts();
 
+    // Cargar Categorías oficiales desde Firebase
+    let categoriesList = [];
+    try {
+      const catQ = query(collection(db, "categories"), orderBy("name", "asc"));
+      const catSnapshot = await getDocs(catQ);
+      catSnapshot.forEach(docSnap => {
+        categoriesList.push({
+          id: docSnap.id,
+          name: docSnap.data().name
+        });
+      });
+    } catch (catErr) {
+      console.warn("No se pudo cargar la colección oficial de categorías, se usará fallback:", catErr);
+    }
+
+    // Fallback: Si la colección oficial está vacía, usamos las categorías de los productos
+    if (categoriesList.length === 0 && uniqueCategories.size > 0) {
+      uniqueCategories.forEach(category => {
+        categoriesList.push({
+          id: category.toLowerCase().trim(),
+          name: category.charAt(0).toUpperCase() + category.slice(1)
+        });
+      });
+      categoriesList.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     // Lógica de botones dinámicos de categorías
     const filterContainer = document.getElementById("filterButtonsContainer");
-    if (filterContainer && uniqueCategories.size > 0) {
-      uniqueCategories.forEach(category => {
+    if (filterContainer && categoriesList.length > 0) {
+      categoriesList.forEach(category => {
         const btn = document.createElement("button");
         btn.className = "filter-btn";
-        btn.dataset.filter = category;
-        btn.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+        btn.dataset.filter = category.id;
+        btn.textContent = category.name;
         filterContainer.appendChild(btn);
       });
 
