@@ -804,6 +804,7 @@ if (btnAddCategory) {
 // Control del Modal de Categorías
 if (btnOpenCategoryModal && categoryModal) {
   btnOpenCategoryModal.addEventListener("click", () => {
+    categoryModal.classList.remove("hidden");
     categoryModal.classList.add("show");
   });
 }
@@ -811,6 +812,7 @@ if (btnOpenCategoryModal && categoryModal) {
 if (btnCloseCategoryModal && categoryModal) {
   btnCloseCategoryModal.addEventListener("click", () => {
     categoryModal.classList.remove("show");
+    categoryModal.classList.add("hidden");
   });
 }
 
@@ -818,6 +820,7 @@ if (categoryModal) {
   categoryModal.addEventListener("click", (e) => {
     if (e.target === categoryModal) {
       categoryModal.classList.remove("show");
+      categoryModal.classList.add("hidden");
     }
   });
 }
