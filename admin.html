@@ -254,9 +254,9 @@
         <p style="color: var(--gray); font-size: 0.92rem; margin-bottom: 1.8rem; line-height: 1.45;">Crea nuevas categorías para tus plantas o elimina las que ya no utilices. Los cambios se verán al instante en los filtros del catálogo público.</p>
         
         <!-- Formulario para agregar -->
-        <div style="display: flex; gap: 10px; margin-bottom: 1.8rem; width: 100%; align-items: center;">
-          <input type="text" id="newCategoryInput" placeholder="Ej: Frutales, Sombra, Cactus..." style="flex: 1; min-width: 0; width: 100%; padding: 0.8rem 1.1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 0.98rem; outline: none; transition: all 0.3s; color: var(--dark);" onfocus="this.style.borderColor='var(--primary)';" onblur="this.style.borderColor='var(--border)';" />
-          <button type="button" id="btnAddCategory" class="btn-primary" style="flex-shrink: 0; padding: 0.8rem 1.4rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; border: none; background: var(--primary); color: white; transition: all 0.3s;" onmouseover="this.style.background='#235817'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='var(--primary)'; this.style.transform='none';">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1.8rem; width: 100%; align-items: center;">
+          <input type="text" id="newCategoryInput" placeholder="Ej: Frutales, Sombra, Cactus..." style="width: 70%; padding: 0.8rem 1.1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 0.98rem; outline: none; transition: all 0.3s; color: var(--dark);" onfocus="this.style.borderColor='var(--primary)';" onblur="this.style.borderColor='var(--border)';" />
+          <button type="button" id="btnAddCategory" class="btn-primary" style="width: 27%; padding: 0.8rem 0; border-radius: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 6px; cursor: pointer; border: none; background: var(--primary); color: white; transition: all 0.3s;" onmouseover="this.style.background='#235817'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='var(--primary)'; this.style.transform='none';">
             <i class="fas fa-plus"></i> Agregar
           </button>
         </div>
