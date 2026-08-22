@@ -31,6 +31,8 @@ const loginEmail = document.getElementById("loginEmail");
 const loginPassword = document.getElementById("loginPassword");
 const btnLogin = document.getElementById("btnLogin");
 const loginError = document.getElementById("loginError");
+const btnTogglePassword = document.getElementById("btnTogglePassword");
+const togglePasswordIcon = document.getElementById("togglePasswordIcon");
 
 const addPlantForm = document.getElementById("addPlantForm");
 const btnSubmitPlant = document.getElementById("btnSubmitPlant");
@@ -78,6 +80,15 @@ onAuthStateChanged(auth, (user) => {
     btnLogout.classList.add("hidden");
   }
 });
+
+// Mostrar/Ocultar Contraseña
+if (btnTogglePassword && loginPassword && togglePasswordIcon) {
+  btnTogglePassword.addEventListener("click", () => {
+    const isPassword = loginPassword.type === "password";
+    loginPassword.type = isPassword ? "text" : "password";
+    togglePasswordIcon.className = isPassword ? "fas fa-eye-slash" : "fas fa-eye";
+  });
+}
 
 // Iniciar Sesión
 loginForm.addEventListener("submit", async (e) => {
