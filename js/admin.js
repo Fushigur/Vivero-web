@@ -724,19 +724,34 @@ function renderCategoryManageList() {
 
   loadedCategories.forEach(cat => {
     const item = document.createElement("div");
-    item.style.display = "flex";
-    item.style.justifyContent = "space-between";
+    item.style.display = "inline-flex";
     item.style.alignItems = "center";
-    item.style.padding = "0.6rem 0.8rem";
-    item.style.background = "#f7fbf4";
-    item.style.border = "1px solid rgba(47,111,31,0.08)";
-    item.style.borderRadius = "10px";
-    item.style.fontSize = "0.95rem";
+    item.style.gap = "8px";
+    item.style.padding = "0.5rem 1rem";
+    item.style.background = "#f4faf0";
+    item.style.border = "1px solid rgba(47,111,31,0.15)";
+    item.style.borderRadius = "99px";
+    item.style.fontSize = "0.92rem";
+    item.style.fontWeight = "600";
+    item.style.color = "var(--dark)";
+    item.style.transition = "all 0.3s";
+    
+    // Animaciones hover
+    item.addEventListener("mouseenter", () => {
+      item.style.borderColor = "var(--primary)";
+      item.style.background = "#e8f5e9";
+      item.style.transform = "translateY(-1px)";
+    });
+    item.addEventListener("mouseleave", () => {
+      item.style.borderColor = "rgba(47,111,31,0.15)";
+      item.style.background = "#f4faf0";
+      item.style.transform = "none";
+    });
 
     item.innerHTML = `
-      <span style="font-weight: 500; color: var(--dark);">${cat.name}</span>
-      <button type="button" class="btn-delete-cat" data-id="${cat.id}" style="background: none; border: none; color: #e63946; cursor: pointer; padding: 4px; font-size: 0.95rem; display: flex; align-items: center; transition: color 0.2s;" title="Eliminar Categoría">
-        <i class="fas fa-trash-alt"></i>
+      <span>${cat.name}</span>
+      <button type="button" class="btn-delete-cat" data-id="${cat.id}" style="background: none; border: none; color: #e63946; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 2px; border-radius: 50%; font-size: 0.85rem; width: 18px; height: 18px; transition: all 0.2s;" title="Eliminar Categoría" onmouseover="this.style.background='rgba(230,57,70,0.1)'; this.style.color='#d90429';" onmouseout="this.style.background='transparent'; this.style.color='#e63946';">
+        <i class="fas fa-times"></i>
       </button>
     `;
 
@@ -744,7 +759,7 @@ function renderCategoryManageList() {
     btnDel.addEventListener("click", async () => {
       const result = await Swal.fire({
         title: '¿Eliminar Categoría?',
-        text: `¿Estás seguro de eliminar la categoría "${cat.name}"? Las plantas asociadas no tendrán filtro visible hasta que las edites y les cambies de categoría.`,
+        text: `¿Estás seguro de eliminar la categoría "${cat.name}"? Las plantas asociadas no tendrán filtro visible en el catálogo hasta que las edites y les asignes otra categoría.`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#e63946',

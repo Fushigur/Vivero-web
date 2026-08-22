@@ -243,26 +243,30 @@
 
     <!-- Modal de Gestión de Categorías -->
     <div id="categoryModal" class="modal-overlay hidden">
-      <div class="modal-content" style="max-width: 500px; width: 100%; text-align: left; padding: 2.5rem; position: relative;">
-        <button type="button" id="btnCloseCategoryModal" style="position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+      <div class="modal-content" style="max-width: 520px; width: 100%; text-align: left; padding: 2.5rem; position: relative; border-radius: 24px; box-shadow: 0 20px 50px rgba(18, 35, 13, 0.15);">
+        <button type="button" id="btnCloseCategoryModal" style="position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray); display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f0f0f0'" onmouseout="this.style.backgroundColor='transparent'">
           <i class="fas fa-times"></i>
         </button>
         
-        <h3 style="margin-bottom: 0.5rem; font-size: 1.4rem; color: var(--primary); font-family: inherit;">Administrar Categorías</h3>
-        <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1.5rem;">Crea nuevas categorías para tus plantas o elimina las que ya no uses.</p>
+        <h3 style="margin-bottom: 0.5rem; font-size: 1.5rem; color: var(--primary); font-family: inherit; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-folder-open"></i> Administrar Categorías
+        </h3>
+        <p style="color: var(--gray); font-size: 0.92rem; margin-bottom: 1.8rem; line-height: 1.45;">Crea nuevas categorías para tus plantas o elimina las que ya no utilices. Los cambios se verán al instante en los filtros del catálogo público.</p>
         
         <!-- Formulario para agregar -->
-        <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
-          <input type="text" id="newCategoryInput" placeholder="Ej: Frutales, Cactus..." style="flex: 1; padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 10px; font-size: 0.95rem; outline: none; transition: border-color 0.3s; color: var(--dark);" />
-          <button type="button" id="btnAddCategory" class="btn-primary" style="padding: 0.75rem 1.2rem; border-radius: 10px; font-weight: 600; display: flex; align-items: center; gap: 5px; cursor: pointer; border: none; background: var(--primary); color: white;">
+        <div style="display: flex; gap: 10px; margin-bottom: 1.8rem; width: 100%; align-items: center;">
+          <input type="text" id="newCategoryInput" placeholder="Ej: Frutales, Sombra, Cactus..." style="flex: 1; min-width: 0; width: 100%; padding: 0.8rem 1.1rem; border: 2px solid var(--border); border-radius: 12px; font-size: 0.98rem; outline: none; transition: all 0.3s; color: var(--dark);" onfocus="this.style.borderColor='var(--primary)';" onblur="this.style.borderColor='var(--border)';" />
+          <button type="button" id="btnAddCategory" class="btn-primary" style="flex-shrink: 0; padding: 0.8rem 1.4rem; border-radius: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; cursor: pointer; border: none; background: var(--primary); color: white; transition: all 0.3s;" onmouseover="this.style.background='#235817'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='var(--primary)'; this.style.transform='none';">
             <i class="fas fa-plus"></i> Agregar
           </button>
         </div>
         
         <!-- Lista de categorías -->
-        <h4 style="margin-bottom: 0.8rem; font-size: 1.05rem; font-weight: 700; color: var(--dark); border-bottom: 1px solid var(--border); padding-bottom: 0.4rem;">Categorías Existentes</h4>
-        <div id="categoryManageList" style="max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 5px;">
-          <!-- Items de categoría inyectados aquí -->
+        <h4 style="margin-bottom: 1rem; font-size: 1.05rem; font-weight: 700; color: var(--dark); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; display: flex; align-items: center; gap: 8px;">
+          <i class="fas fa-tags" style="color: var(--primary);"></i> Categorías Activas
+        </h4>
+        <div id="categoryManageList" style="max-height: 220px; overflow-y: auto; display: flex; flex-wrap: wrap; gap: 10px; padding: 5px 0;">
+          <!-- Items de categoría inyectados aquí como hermosas tags -->
         </div>
       </div>
     </div>
