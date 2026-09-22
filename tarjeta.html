@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarjetas de Presentación | Vivero Elizabeht Flores</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    :root {
+      --primary: #12372A;
+      --primary-light: #1B4D3E;
+      --gold: #D4AF37;
+      --gold-gradient: linear-gradient(135deg, #ECC876 0%, #D4AF37 50%, #A67C1E 100%);
+      --cream: #FAF8F5;
+      --text-dark: #1F2937;
+      --text-muted: #6B7280;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: #E5E7EB;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .toolbar {
+      background: white;
+      padding: 16px 24px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 35px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .toolbar h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-right: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(18, 55, 42, 0.25);
+    }
+
+    .btn-secondary {
+      background: #F3F4F6;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #E5E7EB;
+      color: #111827;
+      box-shadow: none;
+    }
+
+    /* Contenedor de presentación */
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 35px;
+      justify-content: center;
+      margin-bottom: 40px;
+    }
+
+    .card-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .card-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* Estructura Tarjeta 90mm x 50mm (Proporción 1.8:1 aprox 340px x 190px en pantalla) */
+    .card {
+      width: 360px;
+      height: 200px;
+      background: var(--cream);
+      border-radius: 8px;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.12);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 42px rgba(0,0,0,0.16);
+    }
+
+    /* FRENTE: Modelo Botánico Premium */
+    .card-front {
+      background: radial-gradient(circle at 10% 10%, #FAF7F2 0%, #F3EDE4 100%);
+      text-align: center;
+    }
+
+    .card-front::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 6px;
+      pointer-events: none;
+    }
+
+    .front-icon {
+      font-size: 2.2rem;
+      background: var(--gold-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .front-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .front-name {
+      font-family: 'Cinzel', serif;
+      font-size: 0.95rem;
+      color: #997417;
+      letter-spacing: 3px;
+      margin-top: 3px;
+      font-weight: 600;
+    }
+
+    .front-divider {
+      width: 45px;
+      height: 2px;
+      background: var(--gold-gradient);
+      margin: 10px auto;
+      border-radius: 2px;
+    }
+
+    .front-subtitle {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      color: var(--primary-light);
+      line-height: 1.5;
+      max-width: 290px;
+    }
+
+    /* REVERSO */
+    .card-back {
+      background: #FFFFFF;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      padding: 26px 28px;
+    }
+
+    .card-back::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: var(--gold-gradient);
+    }
+
+    .back-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .back-services-clean {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+    }
+
+    .service-clean-text {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--primary);
+      text-transform: uppercase;
+    }
+
+    .card-dark-back .service-clean-text {
+      color: #ECC876;
+    }
+
+    .back-contact-clean {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .contact-clean-phone {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+
+    .card-dark-back .contact-clean-phone {
+      color: #FFFFFF;
+    }
+
+    .contact-clean-text {
+      font-size: 0.72rem;
+      color: #4B5563;
+      font-weight: 500;
+    }
+
+    .card-dark-back .contact-clean-text {
+      color: #D1D5DB;
+    }
+
+    .back-qr {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .qr-box {
+      width: 80px;
+      height: 80px;
+      background: white;
+      padding: 5px;
+      border-radius: 6px;
+      border: 1px solid #E5E7EB;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qr-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .qr-text {
+      font-size: 0.6rem;
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* MODELO 2: DARK LUXURY (VERDE BOSQUE & ORO) */
+    .card-dark-front {
+      background: linear-gradient(135deg, #0F2D22 0%, #174233 100%);
+      color: white;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    .card-dark-front::before {
+      border-color: rgba(212, 175, 55, 0.35);
+    }
+
+    .card-dark-front .front-title {
+      color: #FFFFFF;
+    }
+
+    .card-dark-front .front-name {
+      color: #ECC876;
+    }
+
+    .card-dark-front .front-subtitle {
+      color: #D1D5DB;
+    }
+
+    .card-dark-back {
+      background: #0E291F;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: white;
+    }
+
+    .card-dark-back .back-brand {
+      color: #ECC876;
+    }
+
+    .card-dark-back .contact-item {
+      color: #E5E7EB;
+    }
+
+    .card-dark-back .contact-item i {
+      color: #ECC876;
+    }
+
+    .card-dark-back .qr-text {
+      color: #ECC876;
+    }
+
+    /* ESTILOS PARA IMPRESIÓN DIRECTA */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .toolbar, .card-label, .tips-section, h2 {
+        display: none !important;
+      }
+      .cards-container {
+        gap: 25px;
+        page-break-inside: avoid;
+        margin-bottom: 30px;
+      }
+      .card {
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+
+    .tips-section {
+      background: white;
+      max-width: 760px;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .tips-section h3 {
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tips-section ul {
+      margin-left: 20px;
+      color: #4B5563;
+    }
+
+    .tips-section li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE ACCIONES -->
+  <div class="toolbar">
+    <h1><i class="fas fa-id-card"></i> Tarjetas de Presentación</h1>
+    <button class="btn" onclick="window.print()">
+      <i class="fas fa-print"></i> Imprimir / Guardar como PDF
+    </button>
+    <a href="index.html" class="btn btn-secondary">
+      <i class="fas fa-arrow-left"></i> Volver a la Web
+    </a>
+  </div>
+
+  <h2 style="font-size: 1.1rem; color: #374151; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;">
+    Opción 1: Elegante Crema & Oro Botánico (Diseño Limpio)
+  </h2>
+
+  <!-- OPCION 1: CREMA BOTANICO -->
+  <div class="cards-container">
+    <!-- Frente -->
+    <div class="card-wrap">
+      <div class="card-label">Frente</div>
+      <div class="card card-front">
+        <div class="front-icon"><i class="fas fa-leaf"></i></div>
+        <div class="front-title">VIVERO</div>
+        <div class="front-name">ELIZABEHT FLORES</div>
+        <div class="front-divider"></div>
+        <div class="front-subtitle">Venta de Plantas &middot; Mantenimiento de Jardines &middot; Tierra Preparada</div>
+      </div>
+    </div>
+
+    <!-- Reverso -->
+    <div class="card-wrap">
+      <div class="card-label">Reverso</div>
+      <div class="card card-back">
+        <div class="back-info">
+          <div class="back-services-clean">
+            <div class="service-clean-text">Venta de Plantas &middot; Tierra Preparada</div>
+            <div class="service-clean-text">Mantenimiento de Jardines</div>
+          </div>
+
+          <div class="back-contact-clean">
+            <div class="contact-clean-phone">+52 984 234 2665</div>
+            <div class="contact-clean-text">Playa del Carmen, Quintana Roo</div>
+            <div class="contact-clean-text">Facebook: Vivero Elizabeht Flores</div>
+          </div>
+        </div>
+
+        <div class="back-qr">
+          <div class="qr-box">
+            <!-- QR a WhatsApp Directo -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/529842342665?text=Hola,%20vi%20su%20tarjeta%20y%20quiero%20informacion" alt="QR WhatsApp">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h2 style="font-size: 1.1rem; color: #374151; margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; margin-top: 15px;">
+    Opción 2: Verde Bosque Luxury (Dark Green & Gold)
+  </h2>
+
+  <!-- OPCION 2: DARK LUXURY -->
+  <div class="cards-container">
+    <!-- Frente Dark -->
+    <div class="card-wrap">
+      <div class="card-label">Frente</div>
+      <div class="card card-front card-dark-front">
+        <div class="front-icon"><i class="fas fa-leaf"></i></div>
+        <div class="front-title">VIVERO</div>
+        <div class="front-name">ELIZABEHT FLORES</div>
+        <div class="front-divider"></div>
+        <div class="front-subtitle">Venta de Plantas &middot; Mantenimiento de Jardines &middot; Tierra Preparada</div>
+      </div>
+    </div>
+
+    <!-- Reverso Dark -->
+    <div class="card-wrap">
+      <div class="card-label">Reverso</div>
+      <div class="card card-back card-dark-back">
+        <div class="back-info">
+          <div class="back-services-clean">
+            <div class="service-clean-text">Venta de Plantas &middot; Tierra Preparada</div>
+            <div class="service-clean-text">Mantenimiento de Jardines</div>
+          </div>
+
+          <div class="back-contact-clean">
+            <div class="contact-clean-phone">+52 984 234 2665</div>
+            <div class="contact-clean-text">Playa del Carmen, Quintana Roo</div>
+            <div class="contact-clean-text">Facebook: Vivero Elizabeht Flores</div>
+          </div>
+        </div>
+
+        <div class="back-qr">
+          <div class="qr-box">
+            <!-- QR a WhatsApp Directo -->
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://wa.me/529842342665?text=Hola,%20vi%20su%20tarjeta%20y%20quiero%20informacion" alt="QR WhatsApp">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECOMENDACIONES DE IMPRESIÓN -->
+  <div class="tips-section">
+    <h3><i class="fas fa-lightbulb"></i> Recomendaciones para llevar a la imprenta:</h3>
+    <ul>
+      <li><strong>Servicios incluidos:</strong> Venta de Plantas (interior, exterior, frutales), Mantenimiento de Jardines y Venta de Tierra preparada y abonos.</li>
+      <li><strong>Medida estándar:</strong> 9.0 cm x 5.0 cm (o 3.5" x 2.0").</li>
+      <li><strong>Papel recomendado:</strong> Couché de 300g o 350g, o Cartulina Opalina con acabado mate.</li>
+      <li><strong>Toque Premium:</strong> Puedes pedirle a la imprenta que agregue <em>laminado mate</em> con <em>barniz a registro</em> o <em>foil dorado</em> en las letras de "Elizabeht Flores" y la hoja.</li>
+      <li><strong>Código QR:</strong> Ya está configurado para que cuando un cliente lo escanee con su celular, le abra directamente un chat a tu <strong>WhatsApp (+52 984 234 2665)</strong>.</li>
+    </ul>
+  </div>
+
+</body>
+</html>
